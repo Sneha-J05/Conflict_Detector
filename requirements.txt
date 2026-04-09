@@ -1,0 +1,12 @@
+requests
+beautifulsoup4
+lxml
+spacy
+rapidfuzz
+networkx
+pyvis
+chromadb
+sentence-transformers
+huggingface_hub
+ollama
+matplotlib

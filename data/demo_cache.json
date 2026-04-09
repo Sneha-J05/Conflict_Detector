@@ -1,0 +1,352 @@
+[
+  {
+    "input_rule": "Data controllers are permitted to process special categories of personal data revealing racial or ethnic origin without explicit consent.",
+    "inferred_modality": "Permission",
+    "conflicts": [
+      {
+        "conflict_id": "GDPR_Art20_R3",
+        "type": "POSSIBLE",
+        "confidence": 0.8,
+        "their_rule": "controller no longer process personal data the controller demonstrates compelling legitimate grounds for the processing which override the interests, rights and freedoms of the data subject or for the establishment, exercise or defence of legal claims obligation",
+        "modality_clash": "Permission vs obligation",
+        "graph_overlap": "Shared graph concepts: a controller",
+        "explanation": "1. The conflict arises between the proposed rule and GDPR_Art20_R3 because the proposed rule allows for processing special categories of personal data (like racial or ethnic origin) without explicit consent, which contradicts the conditions specified in GDPR_Art20_R3 where such processing is allowed only when there are compelling legitimate grounds that override the interests, rights, and freedoms of the data subject.\n\n2. A specific scenario where this conflict would arise is when a data controller wishes to process special categories of personal data (e.g., for research purposes or employment decisions) without explicitly obtaining consent from the data subjects, but argues that there are compelling legitimate grounds for processing the data according to GDPR_Art20_R",
+        "lex_specialis_resolution": "3.\n\n",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art29_R1",
+        "type": "CONFIRMED",
+        "confidence": 0.79,
+        "their_rule": "<processor or person acting under the authority of controller or processor> process personal data has access to personal data and is not instructed by the controller, unless required by Union or Member State law prohibition",
+        "modality_clash": "Permission vs prohibition",
+        "graph_overlap": "Shared graph concepts: a controller, person",
+        "explanation": "1. The conflict arises between the proposed rule and GDPR_Art29_R1 due to the differing requirements for consent in processing special categories of personal data (sensitive data) under the two regulations. While the proposed rule suggests that explicit consent is not required for processing sensitive data revealing racial or ethnic origin, GDPR_Art29_R1 generally prohibits the processing of such data without the data subject's explicit consent, unless specific exceptions apply.\n\n2. A specific scenario where this conflict would arise is when a data controller seeks to process special categories of personal data (e.g., racial or ethnic origin) without obtaining explicit consent from the data subject, but the processing is not covered by any of the GDPR's exceptions that allow for processing without consent.",
+        "lex_specialis_resolution": "3. Under the principle of lex specialis (special law), GDPR takes legal precedence over the proposed rule. This is because the General Data Protection Regulation (GDPR) is a more specific and detailed regulation governing data protection in the European Union, while the proposed rule seems to contradict the explicit provisions in Article 9 of the GDPR regarding processing sensitive personal data. Therefore, GDPR_Art29_R1 will apply unless there is an express provision in GDPR allowing for the processing of such data without explicit consent in specific circumstances.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art9_R1",
+        "type": "CONFIRMED",
+        "confidence": 0.78,
+        "their_rule": "anyone processing personal data Processing revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, trade union membership, genetic data, biometric data for unique identification of a natural person, data concerning health or sex life/sexual orientation prohibition",
+        "modality_clash": "Permission vs prohibition",
+        "graph_overlap": "Shared graph concepts: data, racial or ethnic origin",
+        "explanation": "1. The conflict arises between these two rules due to their contrasting approaches towards processing special categories of personal data (as defined in GDPR_Art9_R1). While the user-proposed rule allows for the processing of such data without explicit consent, GDPR_Art9_R1 generally prohibits it unless specific exceptions apply.\n\n2. A conflict would arise when a data controller intends to process special categories of personal data revealing racial or ethnic origin without obtaining explicit consent and without meeting any of the exceptions listed under GDPR_Art9_R1.",
+        "lex_specialis_resolution": "3. Under lex specialis (a legal principle that applies when a specific law conflicts with a general one), the GDPR regulation takes legal precedence over the user-proposed rule due to its more detailed and specific provisions regarding personal data processing. The GDPR has stricter regulations for sensitive personal data such as racial or ethnic origin, providing more protection for individuals' privacy rights in this area.",
+        "regulation": "GDPR"
+      }
+    ],
+    "summary": {
+      "confirmed": 2,
+      "possible": 1,
+      "total_checked": 10
+    }
+  },
+  {
+    "input_rule": "Companies can legally store cookies and track user location data indefinitely prior to obtaining informed consent.",
+    "inferred_modality": "Permission",
+    "conflicts": [],
+    "summary": {
+      "confirmed": 0,
+      "possible": 0,
+      "total_checked": 10
+    }
+  },
+  {
+    "input_rule": "Data processors shall not provide the data subject with access to their personal data upon request.",
+    "inferred_modality": "Prohibition",
+    "conflicts": [
+      {
+        "conflict_id": "GDPR_Art29_R1",
+        "type": "POSSIBLE",
+        "confidence": 0.84,
+        "their_rule": "<processor or person acting under the authority of controller or processor> process personal data has access to personal data and is not instructed by the controller, unless required by Union or Member State law prohibition",
+        "modality_clash": "Prohibition vs prohibition",
+        "graph_overlap": "Shared graph concepts: a processor, access, person, the data",
+        "explanation": "1. The conflict arises between the proposed rule and GDPR_Art29_R1 because the former would prevent data subjects from accessing their own personal data upon request, which contradicts the principle of transparency and data subject access rights established by GDPR_Art15, a fundamental aspect of the General Data Protection Regulation (GDPR).\n\n2. A specific scenario where this conflict would arise is when a data processor refuses to provide a data subject with their personal data upon request, even though they have the technical capability and are not explicitly instructed by the controller or the law to withhold it.",
+        "lex_specialis_resolution": "3. Under lex specialis, GDPR takes legal precedence over the proposed rule due to its status as a comprehensive regulation specifically dedicated to privacy and data protection within the European Union. The GDPR is more specific to the matter of personal data processing, whereas the proposed rule contradicts established principles and rights in this area, making it a less specific or general rule. By allowing data subjects the right to access their personal data, GDPR promotes transparency, accountability, and control over one's own information—principles that are not present in the proposed rule.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art89_R4",
+        "type": "CONFIRMED",
+        "confidence": 0.79,
+        "their_rule": "Processors for mentioned purposes Process data without identifying subjects if possible. If those purposes can be fulfilled by further processing which does not permit or no longer permits the identification of data subjects. permission",
+        "modality_clash": "Prohibition vs permission",
+        "graph_overlap": "Shared graph concepts: a processor, subject",
+        "explanation": "1. The potential conflict arises between the proposed rule and GDPR_Art89_R4 due to their contradictory nature regarding access to personal data. While the proposed rule prohibits data processors from providing access to personal data upon request, GDPR_Art89_R4 allows for processing data without identifying subjects if such processing is necessary for specific purposes.\n2. A conflict would arise in a scenario where a data processor claims that fulfilling a data subject's request for access to their personal data is not possible due to the need to process the data anonymously or pseudonymously for a permitted purpose, as outlined in GDPR_Art89_R4.",
+        "lex_specialis_resolution": "3. Under lex specialis (a principle of law where a specific law takes precedence over a general one), GDPR_Art89_R4 would take legal precedence. This is because it is a more specific regulation dealing with data processing without identifying subjects, which encompasses the scenario described in the proposed rule. The GDPR as a whole aims to protect the privacy and rights of data subjects, and providing access to personal data is an essential aspect of that protection.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art9_R2",
+        "type": "CONFIRMED",
+        "confidence": 0.77,
+        "their_rule": "anyone with explicit consent Processing specified purposes, Union or Member State law prevents data subject from lifting prohibition permission",
+        "modality_clash": "Prohibition vs permission",
+        "graph_overlap": "Shared graph concepts: data, their personal data",
+        "explanation": "1. The conflict arises because both the General Data Protection Regulation (GDPR) and ePrivacy regulations have provisions that address a user's right to access their personal data, but they may have contradictory requirements. GDPR (Article 15) grants users the right to access their personal data, while ePrivacy regulations might require certain data processors to deny access under specific circumstances, such as protecting confidential communications.\n\n2. A specific scenario where this conflict could arise is when a user requests access to their personal data from a data processor that claims it must protect confidential communication under ePrivacy regulations, while the user has granted explicit consent for processing under GDPR.",
+        "lex_specialis_resolution": "3. Under lex specialis (the principle stating that a more specific law takes precedence over a more general one), the GDPR would take legal precedence in this situation due to its more comprehensive scope and broader application concerning personal data protection, encompassing both electronic communications and other types of information. The ePrivacy regulations may provide an exception or limitation within GDPR's framework for specific cases, such as confidential communications, but they do not override the overall rights of users as outlined in GDPR.\n\nRegarding the proposed rule, it conflicts with existing GDPR regulations since it denies data subjects their fundamental right to access their personal data upon request, which goes against Article 15 of GDPR. The user's proposal would undermine the transparency and accountability principles that are essential components of GDPR compliance.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art39_R1",
+        "type": "CONFIRMED",
+        "confidence": 0.76,
+        "their_rule": "controller and processor ensure data protection officer is involved in issues regarding protection of personal data article 39 requires controller and processor to support the data protection officer in carrying out their tasks obligation",
+        "modality_clash": "Prohibition vs obligation",
+        "graph_overlap": "Shared graph concepts: a processor",
+        "explanation": "1. The potential conflict arises between the proposed rule and GDPR_Art39_R1 due to contradictory principles. While the proposed rule restricts data subjects' access to their personal data, GDPR emphasizes the transparency and data subject's rights, including the right of access (Article 15). The proposed rule may infringe upon this right by denying access.\n\n2. A specific scenario where this conflict would arise is when a data subject requests access to their personal data from a data processor, but the processor, as per the proposed rule, denies providing the data without involving the data protection officer (DPO) in issues regarding the protection of personal data. This could potentially violate the data subject's right of access under GDPR.",
+        "lex_specialis_resolution": "3. Under lex specialis, the GDPR takes legal precedence over the proposed rule because it is a more specific regulation that addresses data privacy and protection in greater detail than the proposed rule. The GDPR explicitly protects the rights of data subjects, including their right to access their personal data, making it the applicable law in this case.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art40_R2",
+        "type": "POSSIBLE",
+        "confidence": 0.48,
+        "their_rule": "data controller or processor process personal data in accordance with Article 6(1)(c) obligation",
+        "modality_clash": "Prohibition vs obligation",
+        "graph_overlap": "No shared entity or scope detected",
+        "explanation": "1. The potential conflict arises between the proposed rule and GDPR_Art40_R2 because the former contradicts a fundamental right granted by GDPR, which is the data subject's right of access to their personal data (Article 15). This right enables individuals to confirm whether their personal data is being processed, obtain a copy of the personal data, and gain insight into certain aspects of how it is processed.\n\n2. The conflict would arise in a scenario where a data processor receives a request from a data subject to access their personal data but refuses to comply with this request in accordance with the proposed rule. This would directly conflict with GDPR_Art40_R2, which obligates both controllers and processors to process personal data only in compliance with the six lawful bases outlined in Article 6(1).",
+        "lex_specialis_resolution": "3. In such a case, under the principle of lex specialis, GDPR_Art40_R2 would take legal precedence over the proposed rule. Lex specialis refers to a more specific law that applies when there is a conflict between multiple laws. GDPR, as a comprehensive data protection regulation, has been designed to ensure the protection of individuals' personal data and provides detailed requirements for controllers and processors regarding access requests from data subjects. Therefore, GDPR_Art40_R2 would override the proposed rule that contradicts this fundamental right.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art9_R5",
+        "type": "POSSIBLE",
+        "confidence": 0.48,
+        "their_rule": "anyone Processing personal data made public by the data subject permission",
+        "modality_clash": "Prohibition vs permission",
+        "graph_overlap": "No shared entity or scope detected",
+        "explanation": "1. The conflict arises between the proposed rule and GDPR_Art9_R5 due to their opposing principles. While the proposed rule suggests that data processors should not provide access to personal data upon request, GDPR_Art9_R5 allows for such access when the personal data have been made public by the data subject.\n\n2. A specific scenario where this conflict would arise is when a data subject requests access to their personal data from a data processor, but that data was previously shared publicly by the data subject themselves.",
+        "lex_specialis_resolution": "3. Under lex specialis, GDPR_Art9_R5 takes legal precedence because it specifically addresses situations where personal data has been made public by the data subject. This rule is more specific (lex specialis) than the proposed general rule restricting access to personal data upon request, and therefore applies in this case. The GDPR encourages transparency and provides exceptions for data that has been made public by the data subject themselves to ensure their rights are not infringed upon unnecessarily.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art26_R1",
+        "type": "POSSIBLE",
+        "confidence": 0.47,
+        "their_rule": "data subject has the right to obtain a copy of the personal data undergoing processing, free of charge and within a reasonable period, not exceeding one month obligation",
+        "modality_clash": "Prohibition vs obligation",
+        "graph_overlap": "No shared entity or scope detected",
+        "explanation": "1. The conflict arises between the proposed rule and GDPR_Art26_R1 because the proposed rule restricts the data subject's right to access their personal data upon request, which contradicts the obligation of data processors under the GDPR to provide a copy of the personal data free of charge within a reasonable period (GDPR_Art26_R1).\n\n2. A specific scenario where this conflict would arise is when a data subject requests access to their personal data from a data processor, but the data processor denies the request under the proposed rule.",
+        "lex_specialis_resolution": "3. Under lex specialis, GDPR_Art26_R1 takes legal precedence over the proposed rule. Lex specialis refers to a specific law that applies in place of a general law when they conflict. In this case, GDPR_Art26_R1 is a more specific regulation (addressing data subjects' rights to access their personal data) than the proposed rule, which generally restricts the data subject's right to access their data. Therefore, GDPR_Art26_R1 would supersede the proposed rule in case of conflict due to its status as lex specialis.",
+        "regulation": "GDPR"
+      }
+    ],
+    "summary": {
+      "confirmed": 3,
+      "possible": 4,
+      "total_checked": 10
+    }
+  },
+  {
+    "input_rule": "Automated decision-making that produces legal effects concerning the data subject is unconditionally authorized without human intervention.",
+    "inferred_modality": "Permission",
+    "conflicts": [],
+    "summary": {
+      "confirmed": 0,
+      "possible": 0,
+      "total_checked": 10
+    }
+  },
+  {
+    "input_rule": "Personal data may be kept in a form which permits identification of data subjects for longer than is necessary for the purposes for which the personal data are processed.",
+    "inferred_modality": "Permission",
+    "conflicts": [
+      {
+        "conflict_id": "GDPR_Art14_R1",
+        "type": "POSSIBLE",
+        "confidence": 0.84,
+        "their_rule": "data subject request confirmation of data processing activities, or access to their personal data the data subject has made a written, electronic or oral request obligation",
+        "modality_clash": "Permission vs obligation",
+        "graph_overlap": "Shared graph concepts: data, the purpose, which",
+        "explanation": "1. The conflict arises between the proposed rule and GDPR_Art14_R1 because the former allows for retention of personal data beyond the necessary time for processing, while the latter (GDPR) emphasizes that personal data should be kept in a form which allows identification for no longer than is necessary for the purposes for which it was collected.\n\n2. A specific scenario where this conflict would arise is when an organization has stored personal data beyond its necessary retention period and a data subject requests access to their personal data or confirmation of processing activities related to it (as per GDPR_Art14_R1).",
+        "lex_specialis_resolution": "3. Under the principle of lex specialis, the more specific rule (GDPR) would take precedence over the general one (proposed rule), as it addresses the situation at hand directly and provides clear guidelines for data controllers to comply with regarding personal data retention periods. This ensures that the privacy rights and protections of the data subject are maintained in accordance with GDPR.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art4_R1",
+        "type": "POSSIBLE",
+        "confidence": 0.82,
+        "their_rule": "<all natural and legal persons, public authorities, agencies> defining the meaning of personal data personal data refers to any information relating to an identified or identifiable natural person definition",
+        "modality_clash": "Permission vs definition",
+        "graph_overlap": "Shared graph concepts: data",
+        "explanation": "1. The conflict arises between the proposed rule and GDPR_Art4_R1 (Regulation (EU) 2016/679, Article 4, Paragraph 1) because the former allows for personal data to be kept in a form that permits identification of data subjects for longer than necessary, while the latter defines personal data as any information relating to an identified or identifiable natural person. This potential conflict suggests retaining personal data beyond the necessary period, which contradicts the principle of data minimization and storage limitation enshrined in GDPR.\n\n2. A specific scenario where this conflict would arise is when a company wants to keep personal data for research purposes or long-term archiving, even after the initial purpose for processing has been accomplished, but the retention could potentially infringe upon individuals' privacy rights as per the GDPR.",
+        "lex_specialis_resolution": "3. Under lex specialis (a principle in law that states a more specific rule takes precedence over a general one), GDPR_Art4_R1 would take legal precedence because it is a foundational principle within the GDPR, defining personal data and establishing the legal framework for protecting individuals' privacy rights. The proposed rule, on the other hand, seems to contradict this definition and could potentially infringe upon the principles of data minimization and storage limitation as stated in Article 5(1)(c) and 5(1)(e) of GDPR respectively. This would mean that personal data may not be kept for longer than is necessary unless there are specific, explicit, and legitimate grounds for doing so according to the provisions outlined in Articles 6 and 9 of GDPR.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art35_R1",
+        "type": "POSSIBLE",
+        "confidence": 0.8,
+        "their_rule": "controller process personal data high risk to the rights and freedoms of data subjects obligation",
+        "modality_clash": "Permission vs obligation",
+        "graph_overlap": "Shared graph concepts: purpose",
+        "explanation": "1. The conflict arises between the proposed rule and GDPR_Art35_R1 (GDPR Article 35 - Data Protection Impact Assessment) due to their opposing principles. While the proposed rule implies that personal data can be kept in an identifiable form for longer than necessary, GDPR_Art35_R1 mandates a Data Protection Impact Assessment (DPIA) when processing activities pose a high risk to the rights and freedoms of data subjects, implying that such data processing should be limited or avoided where possible.\n\n2. A specific scenario where this conflict may arise is when a controller decides to keep personal data in an identifiable form for longer than necessary, but the data processing activity presents a high risk to the rights and freedoms of the data subjects, such as large-scale systematic monitoring, profiling, or processing sensitive personal data.",
+        "lex_specialis_resolution": "3. Under lex specialis (a principle of law that indicates a more specific law takes precedence over a general one), GDPR_Art35_R1 would take legal precedence because it is a more specific provision addressing high-risk data processing activities, whereas the proposed rule is a broader statement about data retention that may not account for the potential risks to data subjects' rights and freedoms. The GDPR prioritizes the protection of personal data and privacy over other interests, and this principle supports GDPR_Art35_R1 taking precedence in case of conflict with the proposed rule.",
+        "regulation": "GDPR"
+      }
+    ],
+    "summary": {
+      "confirmed": 0,
+      "possible": 3,
+      "total_checked": 10
+    }
+  },
+  {
+    "input_rule": "Organizations must notify the supervisory authority within 72 hours of becoming aware of a personal data breach.",
+    "inferred_modality": "Obligation",
+    "conflicts": [
+      {
+        "conflict_id": "GDPR_Art33_R1",
+        "type": "POSSIBLE",
+        "confidence": 0.85,
+        "their_rule": "controller notify data protection supervisory authority in case of a personal data breach obligation",
+        "modality_clash": "Obligation vs obligation",
+        "graph_overlap": "Shared graph concepts: a personal data breach",
+        "explanation": "1. The conflict arises between the GDPR and ePrivacy regulations due to their overlapping yet distinct scope and focus. While the GDPR primarily focuses on the protection of personal data, the ePrivacy Regulation emphasizes privacy in electronic communications, including the processing of electronic communications data and metadata. This can lead to a potential conflict when personal data breaches involve electronic communications data.\n2. A specific scenario where this conflict might arise is when a personal data breach involves sensitive electronic communication data, such as email content, SMS messages, or internet browsing history. In such a case, both regulations may apply, potentially leading to inconsistencies in how organizations handle and report the breach.",
+        "lex_specialis_resolution": "3. Under the principle of lex specialis, the more specific regulation (in this case, the GDPR) would take legal precedence over the more general one (ePrivacy Regulation). This is because the GDPR provides detailed provisions regarding personal data breaches and the notification obligations to supervisory authorities, while the ePrivacy Regulation does not explicitly address such circumstances. The GDPR's focus on personal data breaches makes it a more suitable regulation to apply in this scenario.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art33_R2",
+        "type": "POSSIBLE",
+        "confidence": 0.82,
+        "their_rule": "processor notify the controller about a personal data breach immediately after becoming aware of it obligation",
+        "modality_clash": "Obligation vs obligation",
+        "graph_overlap": "Shared graph concepts: a personal data breach",
+        "explanation": "1. The potential conflict arises between the GDPR and ePrivacy rules due to their differing scopes and focus. While the GDPR is primarily concerned with the protection of personal data and privacy in the context of the EU, the ePrivacy Directive focuses on the confidentiality of electronic communications. Although both regulations aim to protect privacy, they do so in different aspects, leading to potential conflicts.\n\n2. A specific scenario where this conflict could arise is when a processor becomes aware of a personal data breach during an electronic communication, involving both personal data and the content of the communication itself. In this case, both rules may require immediate notification of the relevant authorities, creating a potential point of conflict.",
+        "lex_specialis_resolution": "3. Under lex specialis, the GDPR would take legal precedence in such a situation due to its broader scope and more specific provisions related to personal data breaches. The GDPR's Articles 33 and 34 provide detailed requirements for notifying supervisory authorities and data controllers about personal data breaches, while the ePrivacy Directive does not explicitly address this issue in the same depth or detail. Therefore, when dealing with a potential conflict between these two regulations, the more specific regulation (GDPR) would apply over the general one (ePrivacy Directive).",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art58_R11",
+        "type": "POSSIBLE",
+        "confidence": 0.81,
+        "their_rule": "supervisory authority order the controller to communicate a personal data breach to the data subject unspecified obligation",
+        "modality_clash": "Obligation vs obligation",
+        "graph_overlap": "Shared graph concepts: a personal data breach",
+        "explanation": "1. The conflict arises between the two regulations (GDPR and ePrivacy) as they both address data protection but have different scopes and specifications, leading to potential contradictions. GDPR primarily focuses on the protection of personal data while ePrivacy is more concerned with privacy in electronic communications.\n\n2. A specific scenario where this conflict might arise is when a controller becomes aware of a personal data breach that involves electronic communications, such as an email data breach. In this case, both regulations could require notification to the supervisory authority and the affected data subjects, but the rules for each notification may not align.",
+        "lex_specialis_resolution": "3. Under lex specialis, the GDPR would take legal precedence in a conflict with the ePrivacy regulation due to its broader scope and more detailed provisions on personal data breaches. The GDPR specifically outlines obligations for controllers in case of a personal data breach (Article 33), whereas the ePrivacy regulation does not address this issue explicitly, making it a more specialized rule in comparison.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "EPRIVACY_Art4_R3",
+        "type": "POSSIBLE",
+        "confidence": 0.8,
+        "their_rule": "provider of publicly available electronic communications services notify the competent national authority and subscribers of a personal data breach when a personal data breach occurs obligation",
+        "modality_clash": "Obligation vs obligation",
+        "graph_overlap": "Shared graph concepts: a personal data breach",
+        "explanation": "1. The potential conflict arises between the General Data Protection Regulation (GDPR) and ePrivacy regulations as they have slightly different scopes, obligations, and recipients for the notification of personal data breaches. While GDPR primarily focuses on data controllers, the ePrivacy rule applies to providers of publicly available electronic communication services, which could lead to overlapping or conflicting requirements.\n\n2. A specific scenario where this conflict would arise is when a provider of publicly available electronic communications services (e.g., an internet service provider) experiences a personal data breach and is subject to both GDPR and ePrivacy regulations. In this case, they may need to notify the supervisory authority under GDPR within 72 hours while also notifying the competent national authority and affected subscribers as per ePrivacy rules.",
+        "lex_specialis_resolution": "3. Under lex specialis (the principle that a more specific rule takes precedence over a general one), in this case, the ePrivacy regulation would take legal precedence due to its specific focus on providers of publicly available electronic communication services. This is because ePrivacy regulations provide more detailed requirements for data breach notifications in the context of electronic communications services compared to GDPR's broader scope. As a result, the provider would prioritize complying with the obligations outlined in the ePrivacy rule, including notifying both the competent national authority and affected subscribers, over the GDPR requirement to notify the supervisory authority within 72 hours.\n\nIt is essential to note that these regulations can be interpreted differently depending on specific jurisdictions, so it's always best to consult with a legal expert familiar with the local data protection landscape for accurate advice and guidance.",
+        "regulation": "ePrivacy"
+      }
+    ],
+    "summary": {
+      "confirmed": 0,
+      "possible": 4,
+      "total_checked": 10
+    }
+  },
+  {
+    "input_rule": "Mailing lists may only be used for direct marketing if the recipient has given explicit prior consent.",
+    "inferred_modality": "Permission",
+    "conflicts": [
+      {
+        "conflict_id": "EPRIVACY_Art13_R4",
+        "type": "CONFIRMED",
+        "confidence": 0.79,
+        "their_rule": "sending electronic mail for the purposes of direct marketing which disguise or conceal the identity of the sender on whose behalf the communication is made, which contravene prohibition",
+        "modality_clash": "Permission vs prohibition",
+        "graph_overlap": "Shared graph concepts: direct marketing",
+        "explanation": "1. The conflict arises due to a potential discrepancy between GDPR's emphasis on explicit and informed consent for data processing (Article 6) and ePrivacy Regulation's specific requirement for clear identification of the sender in electronic direct marketing communications (Article 13(4)). The GDPR allows some flexibility regarding the manner of obtaining consent, while ePrivacy rules are stricter on the transmission and identification of the sender.\n\n2. A specific scenario where this conflict might arise is when a company anonymizes its identity or uses third-party services to send direct marketing emails without the recipient's explicit prior consent, which contravenes both regulations.",
+        "lex_specialis_resolution": "3. Under lex specialis (the principle that a more specific rule takes precedence over a general one), in this case, ePrivacy Regulation would take legal precedence because it addresses the specific act of sending electronic direct marketing communications and provides a clear prohibition on disguising or concealing the identity of the sender. This is to ensure transparency and accountability in electronic communications, which are crucial aspects of protecting the privacy rights of individuals as outlined in both regulations.",
+        "regulation": "ePrivacy"
+      },
+      {
+        "conflict_id": "EPRIVACY_Art13_R4_1",
+        "type": "CONFIRMED",
+        "confidence": 0.76,
+        "their_rule": "<any event> send electronic mail for the purposes of direct marketing which disguise or conceal the identity of the sender on whose behalf the communication is made, or contravene prohibition",
+        "modality_clash": "Permission vs prohibition",
+        "graph_overlap": "Shared graph concepts: direct marketing",
+        "explanation": "1. The conflict arises between GDPR and ePrivacy regulations due to their slightly divergent focuses and requirements regarding direct marketing via electronic communications. While GDPR primarily emphasizes obtaining explicit consent for processing personal data, including using it for direct marketing (Article 6 and Article 9), the ePrivacy Directive (and its successor Regulation) is more specific about the use of electronic mail for direct marketing, with stricter rules on unsolicited communications, such as concealing the sender's identity (Article 13, paragraph 4, point 1).\n\n2. A specific scenario where this conflict might arise would be when a company sends direct marketing emails disguising or concealing the identity of the sender to a recipient who has not explicitly consented to receiving such communications under GDPR. This would violate both the spirit of GDPR consent requirements and ePrivacy's prohibition on disguised or misleading electronic mail for direct marketing purposes.",
+        "lex_specialis_resolution": "3. In terms of legal precedence, under the principle of lex specialis (a more specific law takes precedence over a general one), the ePrivacy Regulation would typically take precedence in this case as it is more explicit and specific about the use of electronic communications for direct marketing. The rationale being that GDPR lays down broad principles for personal data protection, while the ePrivacy Regulation provides additional, necessary protections related to privacy in the context of electronic communication services.",
+        "regulation": "ePrivacy"
+      }
+    ],
+    "summary": {
+      "confirmed": 2,
+      "possible": 0,
+      "total_checked": 10
+    }
+  },
+  {
+    "input_rule": "A data protection officer shall be designated if the core activities consist of large scale regular and systematic monitoring of data subjects.",
+    "inferred_modality": "Obligation",
+    "conflicts": [
+      {
+        "conflict_id": "GDPR_Art39_R1",
+        "type": "POSSIBLE",
+        "confidence": 0.82,
+        "their_rule": "controller and processor ensure data protection officer is involved in issues regarding protection of personal data article 39 requires controller and processor to support the data protection officer in carrying out their tasks obligation",
+        "modality_clash": "Obligation vs obligation",
+        "graph_overlap": "Shared graph concepts: a data protection officer",
+        "explanation": "1. The potential conflict arises between the proposed rule and GDPR_Art39_R1 because the proposed rule specifically states that a Data Protection Officer (DPO) should be designated if the core activities consist of large scale regular and systematic monitoring of data subjects, while GDPR_Art39_R1 requires the controller and processor to ensure the involvement of the DPO in issues regarding the protection of personal data without explicitly specifying the scale or type of monitoring.\n2. A conflict would arise in a scenario where a controller or processor engages in large scale regular and systematic monitoring of data subjects but falls below the threshold defined in the proposed rule for requiring a DPO, yet they are still obligated under GDPR_Art39_R1 to involve the DPO in issues regarding personal data protection.",
+        "lex_specialis_resolution": "3. Under lex specialis (a principle that states a more specific law takes precedence over a more general one), the proposed rule would take legal precedence. This is because the proposed rule is a more specific requirement related to the appointment of a DPO for large scale monitoring activities, which falls under GDPR_Art39_R1's broader obligation for all processing activities. The specificity of the proposed rule makes it more applicable and relevant in situations where both rules could potentially apply.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art37_R1",
+        "type": "POSSIBLE",
+        "confidence": 0.82,
+        "their_rule": "controller or processor designate a data protection officer when required by Union or Member State law obligation",
+        "modality_clash": "Obligation vs obligation",
+        "graph_overlap": "Shared graph concepts: a data protection officer",
+        "explanation": "1. The potential conflict arises because the user-proposed rule is more expansive than GDPR_Art37_R1. While the user-proposed rule mandates a Data Protection Officer (DPO) for large scale regular and systematic monitoring of data subjects, GDPR_Art37_R1 only requires a DPO when it's mandated by either Union or Member State law.\n\n2. The conflict would specifically arise in scenarios where the user-proposed rule is interpreted as requiring a DPO regardless of any specific legal obligation, while GDPR_Art37_R1 does not necessitate one unless legally obliged.",
+        "lex_specialis_resolution": "3. Under lex specialis (a more specific law takes precedence over a less specific one), the GDPR rule (GDPR_Art37_R1) would take precedence because it is part of a comprehensive data protection regulation that includes the user-proposed rule as a special case. The GDPR rule is more specific in terms of the condition for designating a DPO, which is based on legal obligation, making it lex specialis. This means that if there's any conflict between the two rules, the more specific (lex specialis) GDPR rule would apply.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art39_R1_2",
+        "type": "POSSIBLE",
+        "confidence": 0.8,
+        "their_rule": "controller and processor ensure access to personal data and processing operations is granted to the data protection officer in carrying out their tasks article 39 requires controller and processor to support the data protection officer in carrying out their tasks obligation",
+        "modality_clash": "Obligation vs obligation",
+        "graph_overlap": "Shared graph concepts: a data protection officer",
+        "explanation": "1. The conflict arises because while both GDPR (Article 39) and ePrivacy regulations require the designation of a Data Protection Officer (DPO), they have different thresholds for triggering this requirement. Under GDPR, a DPO is necessary for controllers and processors carrying out large scale regular and systematic monitoring of data subjects, whereas under ePrivacy, there is no such explicit threshold.\n\n2. The specific scenario where the conflict would arise is when a controller or processor engages in activities that are subject to both GDPR and ePrivacy regulations but do not meet the threshold for a DPO under GDPR rules (Article 39), but they would be required to have a DPO according to the proposed rule.",
+        "lex_specialis_resolution": "3. Under lex specialis, the proposed rule takes legal precedence as it provides a more specific and detailed interpretation of what constitutes activities requiring a Data Protection Officer. The principle of lex specialis dictates that if there is a conflict between general (lex generalis) and specific law (lex specialis), the latter prevails. In this case, GDPR (Article 39) is the general rule, while the proposed rule provides a more specific definition of activities necessitating a DPO.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art39_R2",
+        "type": "POSSIBLE",
+        "confidence": 0.8,
+        "their_rule": "controller and processor ensure expert knowledge of data protection regulations and their implementation is maintained by the data protection officer in carrying out their tasks article 39 requires controller and processor to support the data protection officer in carrying out their tasks obligation",
+        "modality_clash": "Obligation vs obligation",
+        "graph_overlap": "Shared graph concepts: a data protection officer",
+        "explanation": "1. The potential conflict arises between the proposed rule and GDPR_Art39_R2 due to a difference in the threshold for designating a Data Protection Officer (DPO). While the proposed rule suggests that a DPO should be designated for large-scale regular and systematic monitoring of data subjects, GDPR_Art39_R2 requires a DPO for all processing activities. This creates a conflict as it's unclear whether the threshold for a DPO is only large-scale or applies to all processing.\n\n2. A specific scenario where this conflict would arise is when a company has regular and systematic monitoring activities but not on a large scale, and they may question whether they are obligated to designate a DPO according to the proposed rule.",
+        "lex_specialis_resolution": "3. In terms of legal precedence under lex specialis, GDPR_Art39_R2 would take precedence due to its more specific nature regarding the requirement for a Data Protection Officer in all processing activities. The principle of lex specialis (the specific law prevails over the general law) applies here because Article 39 provides a more precise definition and scope of the need for a DPO compared to the proposed rule, which is less detailed and potentially broader in its application.",
+        "regulation": "GDPR"
+      },
+      {
+        "conflict_id": "GDPR_Art24_R1",
+        "type": "POSSIBLE",
+        "confidence": 0.8,
+        "their_rule": "controller must designate in writing a data protection officer or an equivalent person obligation",
+        "modality_clash": "Obligation vs obligation",
+        "graph_overlap": "Shared graph concepts: a data protection officer",
+        "explanation": "1. The potential conflict between the General Data Protection Regulation (GDPR) and ePrivacy regulations arises due to differences in their definitions for what constitutes a 'data controller' and the triggers for appointing a Data Protection Officer (DPO). While GDPR focuses on large-scale, systematic monitoring of data subjects, ePrivacy rules might have broader or narrower scopes for defining controllers, leading to situations where a DPO may be required under GDPR but not ePrivacy, or vice versa.\n\n2. A specific scenario where this conflict could arise is when a company processes personal data in the context of electronic communications (e.g., email or SMS), which would fall under both regulations. If the processing of these communications involves large-scale, systematic monitoring, a DPO might be required under GDPR, but if ePrivacy rules have more stringent criteria for designating controllers, no DPO may be appointed according to those regulations.",
+        "lex_specialis_resolution": "3. Under lex specialis, the GDPR would take legal precedence in this scenario. This principle applies when there is a conflict between general and specific laws. Given that GDPR specifically addresses the appointment of a Data Protection Officer for large-scale, systematic monitoring, it provides more specific guidance than ePrivacy regulations, making it the controlling law in case of any conflict. This means that even if no DPO is required under ePrivacy rules, one should still be designated according to GDPR guidelines due to its greater specificity on this matter.",
+        "regulation": "GDPR"
+      }
+    ],
+    "summary": {
+      "confirmed": 0,
+      "possible": 5,
+      "total_checked": 10
+    }
+  }
+]

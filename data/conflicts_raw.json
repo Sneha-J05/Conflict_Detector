@@ -1,0 +1,1760 @@
+[
+  {
+    "conflict_id": "C001",
+    "type": "redundancy",
+    "rule_1": {
+      "rule_id": "GDPR_Art11_R2",
+      "entity": "controller",
+      "action": "inform data subject",
+      "condition": "unable to identify data subject",
+      "modality": "obligation",
+      "scope": "data subjects referred to in paragraph 1 of the article",
+      "references": [],
+      "raw_text": "Where, in cases referred to in paragraph 1 of this Article, the controller is able to demonstrate that it is not in a position to identify the data subject, the controller shall inform the data subject accordingly, if possible.",
+      "source": "GDPR",
+      "article_number": 11,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.85,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller",
+      "the controllers"
+    ],
+    "composite_score": 0.255,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Both rules apply to the same entities, actions, conditions and modality, with identical lex specialis.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C002",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art20_R3",
+      "entity": "controller",
+      "action": "no longer process personal data",
+      "condition": "the controller demonstrates compelling legitimate grounds for the processing which override the interests, rights and freedoms of the data subject or for the establishment, exercise or defence of legal claims",
+      "modality": "obligation",
+      "scope": "personal data",
+      "references": [],
+      "source": "GDPR",
+      "article_number": [
+        20,
+        21
+      ],
+      "article_type": [
+        "enforcement",
+        "definition"
+      ],
+      "weights": {
+        "source": 1.0,
+        "article": 0.85,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller",
+      "not personal data",
+      "the controllers"
+    ],
+    "composite_score": 0.68,
+    "confidence": 1.0,
+    "precedence": "rule_1",
+    "reasoning": "Rule 1 imposes an obligation on a controller not to process personal data if specific conditions are met. Rule 2 imposes an obligation on a controller or processor to ensure adequate protection when transferring personal data to a third country or an international organization.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C003",
+    "type": "redundancy",
+    "rule_1": {
+      "rule_id": "GDPR_Art24_R1",
+      "entity": "controller",
+      "action": "must designate in writing a data protection officer or an equivalent person",
+      "condition": null,
+      "modality": "obligation",
+      "scope": "processing governed by the GDPR",
+      "references": [
+        "GDPR_Art27",
+        "GDPR_Art32",
+        "GDPR_Art36"
+      ],
+      "raw_text": "The controller must designate in writing a data protection officer or an equivalent person.",
+      "source": "GDPR",
+      "article_number": 24,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller",
+      "the controllers"
+    ],
+    "composite_score": 0.24,
+    "confidence": 1.0,
+    "precedence": "rule_1",
+    "reasoning": "both rules require a controller to take specific actions when certain conditions apply, respectively under GDPR and International Data Transfer Regulation.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C004",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art24_R2",
+      "entity": "controller",
+      "action": "implement technical and organisational measures",
+      "condition": "processing is performed in accordance with GDPR",
+      "modality": "obligation",
+      "scope": "all processing activities",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "source": "GDPR",
+      "article_number": 24,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller"
+    ],
+    "composite_score": 0.56,
+    "confidence": 0.8,
+    "precedence": "rule_1",
+    "reasoning": "Rule 1 applies when the processing is performed in accordance with GDPR. Rule 2 applies when transferring personal data to a third country or an international organisation. Both rules can apply to the same controller, but the conditions of Rule 1 must be met before considering Rule 2.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C005",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art33_R1",
+      "entity": "controller",
+      "action": "notify data protection supervisory authority",
+      "condition": "in case of a personal data breach",
+      "modality": "obligation",
+      "scope": "all processing activities under the controller's responsibility",
+      "references": [
+        "GDPR_Art30",
+        "GDPR_Art34"
+      ],
+      "source": "GDPR",
+      "article_number": 33,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller"
+    ],
+    "composite_score": 0.56,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Both rules apply to the same controller action, but with different conditions. Therefore, the relationship between the two rules is conditional_conflict.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C006",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art33_R3",
+      "entity": "controller",
+      "action": "notify",
+      "condition": "personal data breach occurred",
+      "modality": "obligation",
+      "scope": "supervisory authority",
+      "references": [
+        "GDPR_Art32",
+        "GDPR_Art34"
+      ],
+      "source": "GDPR",
+      "article_number": 33,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller"
+    ],
+    "composite_score": 0.56,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1 imposes an obligation for a controller to notify in the event of a personal data breach. Rule 2, on the other hand, imposes an obligation on the controller or processor to ensure appropriate safeguards when transferring personal data to a third country or international organization. However, only one of these obligations can be fulfilled at any given time. This creates a conflict between the two rules. The application of Rule 1 requires the controller to notify in the event of a personal data breach, which may interrupt or delay the transfer of personal data under Rule 2. On the other hand, the application of Rule 2 requires the controller to ensure appropriate safeguards when transferring personal data to a third country or international organization, which may involve additional time and resources that may compromise the controller's ability to fulfill its obligation under Rule 1 to notify in the event of a personal data breach within the required timeframe.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C007",
+    "type": "redundancy",
+    "rule_1": {
+      "rule_id": "GDPR_Art34_R1",
+      "entity": "controller",
+      "action": "communicates personal data breach to data subject",
+      "condition": "personal data breach is likely to result in a high risk to the rights and freedoms of data subjects",
+      "modality": "obligation",
+      "scope": "controller-data subject communication",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "raw_text": "article text here",
+      "source": "GDPR",
+      "article_number": 34,
+      "article_type": "enforcement",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller"
+    ],
+    "composite_score": 0.24,
+    "confidence": 1.0,
+    "precedence": "rule_1",
+    "reasoning": "Both rules apply to the same entities and actions but with different conditions. However, the condition in Rule 1 is a subset of the condition in Rule 2.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C008",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art37_R1",
+      "entity": "controller or processor",
+      "action": "designate a data protection officer",
+      "condition": "when required by Union or Member State law",
+      "modality": "obligation",
+      "scope": "group of undertakings, single data protection officer for several authorities or bodies, taking account of their organisational structure and size",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "source": "GDPR",
+      "article_number": 37,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller"
+    ],
+    "composite_score": 0.56,
+    "confidence": 0.8,
+    "precedence": "rule_1",
+    "reasoning": "Rule 1 requires a controller to designate a data protection officer if required by Union or Member State law. Rule 2 requires a controller to designate a data protection officer when transferring personal data to a third country or an international organisation.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C009",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art39_R1_1",
+      "entity": "controller and processor",
+      "action": "ensure resources are available to the data protection officer in carrying out their tasks",
+      "condition": "article 39 requires controller and processor to support the data protection officer in carrying out their tasks",
+      "modality": "obligation",
+      "scope": "article 39 applies to all processing activities",
+      "references": [
+        "GDPR_Art37",
+        "GDPR_Art39_R1",
+        "GDPR_Art39_R1_1"
+      ],
+      "source": "GDPR",
+      "article_number": 39,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller",
+      "processor"
+    ],
+    "composite_score": 0.56,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1 places an obligation on controller and processor to ensure resources are available to the data protection officer in carrying out their tasks, specifically in relation to GDPR. Rule 2 places an obligation on controller or processor to ensure that when transferring personal data to a third country or an international organisation, they have provided appropriate safeguards in accordance with the International Data Transfer Regulation.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C010",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art39_R1_2",
+      "entity": "controller and processor",
+      "action": "ensure access to personal data and processing operations is granted to the data protection officer in carrying out their tasks",
+      "condition": "article 39 requires controller and processor to support the data protection officer in carrying out their tasks",
+      "modality": "obligation",
+      "scope": "article 39 applies to all processing activities",
+      "references": [
+        "GDPR_Art37",
+        "GDPR_Art39_R1",
+        "GDPR_Art39_R1_2"
+      ],
+      "source": "GDPR",
+      "article_number": 39,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller",
+      "not personal data",
+      "processor"
+    ],
+    "composite_score": 0.56,
+    "confidence": 0.8,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1 places an obligation on the controller and processor with respect to access to personal data for the data protection officer. Rule 2 places an obligation on the controller or processor with respect to transferring personal data to a third country or an international organisation. The conditional conflict arises due to the fact that both rules apply to the controller or processor but the obligations under Rule 1 and Rule 2 may conflict or require prioritization.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C011",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art39_R2",
+      "entity": "controller and processor",
+      "action": "ensure expert knowledge of data protection regulations and their implementation is maintained by the data protection officer in carrying out their tasks",
+      "condition": "article 39 requires controller and processor to support the data protection officer in carrying out their tasks",
+      "modality": "obligation",
+      "scope": "article 39 applies to all processing activities",
+      "references": [
+        "GDPR_Art37",
+        "GDPR_Art39_R1",
+        "GDPR_Art39_R1_2",
+        "GDPR_Art39_R2"
+      ],
+      "source": "GDPR",
+      "article_number": 39,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller",
+      "processor"
+    ],
+    "composite_score": 0.56,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1 applies when both controller and processor ensuring expert knowledge of data protection regulations and their implementation is maintained by the data protection officer. Rule 2 applies when transferring personal data to a third country or an international organisation and controller or processor is concerned. Therefore, there is a conditional conflict between the two rules.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C012",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art40_R3",
+      "entity": "body as referred to in paragraph 1 of this Article",
+      "action": "take appropriate action",
+      "condition": "in cases of infringement of the code by a controller or processor",
+      "modality": "obligation",
+      "scope": "includes suspension or exclusion of the controller or processor concerned from the code",
+      "references": [
+        "GDPR_Art40_R2"
+      ],
+      "raw_text": "(1) Subject to appropriate safeguards, a body as referred to in paragraph 1 of this Article shall take appropriate action in cases of infringement of the code by a controller or processor. Such actions may include suspension or exclusion of the controller or processor concerned from the code. (2) It shall inform the competent supervisory authority of such actions and the reasons for taking them.",
+      "source": "GDPR",
+      "article_number": 40,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "a controller",
+      "processor",
+      "the controllers"
+    ],
+    "composite_score": 0.56,
+    "confidence": 1.0,
+    "precedence": "rule_1",
+    "reasoning": "Rule 1 places an obligation on the body as referred to in paragraph 1 of Article 40 of GDPR to take appropriate action in cases of infringement of the code by a controller or processor. Rule 2 places an obligation on the controller or processor when transferring personal data to a third country or an international organisation to take appropriate safeguards.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C013",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art24_R2",
+      "entity": "controller",
+      "action": "implement technical and organisational measures",
+      "condition": "processing is performed in accordance with GDPR",
+      "modality": "obligation",
+      "scope": "all processing activities",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "source": "GDPR",
+      "article_number": 24,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "accordance"
+    ],
+    "composite_score": 0.56,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1 obligates a controller to implement certain measures, while Rule 2 provides an exception to these measures for international organizations and third countries when providing adequate data protection. Therefore, the relationship between Rule 1 and Rule 2 is conditional_conflict.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C014",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art14_R1",
+      "entity": "data subject",
+      "action": "request confirmation of data processing activities, or access to their personal data",
+      "condition": "the data subject has made a written, electronic or oral request",
+      "modality": "obligation",
+      "scope": "all personal data",
+      "references": [
+        "GDPR_Art15",
+        "GDPR_Art34"
+      ],
+      "raw_text": "Data subjects have the right to obtain from the controller confirmation as to whether or not personal data concerning them are being processed. They also have the right to request from the controller access to their personal data and the following information: (a) the purposes of the processing; (b) the categories of personal data concerned; (c) the recipients or categories of recipient to whom the personal data have been or will be disclosed, in particular recipients in third countries or international organisations; (d) where possible, the envisaged period for which the personal data will be stored, or, if not possible, the criteria used to determine that period; (e) the existence of the right to request from the controller rectification or erasure of personal data or restriction of processing of personal data concerning the data subject or to object to such processing; (f) the right to lodge a complaint with a supervisory authority; (g) where the personal data are not collected from the data subject, any available information as to their source; (h) the existence of automated decision-making, including profiling, referred to in Article 22(1) and (4) and, at least in those cases, meaningful information about the logic involved, as well as the significance and the envisaged consequences of such processing for the data subject.",
+      "source": "GDPR",
+      "article_number": 14,
+      "article_type": "core_obligation",
+      "weights": {
+        "source": 1.0,
+        "article": 0.85,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "an international organisation",
+      "recipient",
+      "third"
+    ],
+    "composite_score": 0.595,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1 allows a data subject to request confirmation or access to their personal data. Rule 2 allows an international organisation or third country to provide personal data when adequate data protection is in place. The conflict arises from the potential interaction between data subjects' rights to access their personal data under Rule 1 and the international organisation or third country's ability to transfer personal data in accordance with Rule 2.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C015",
+    "type": "redundancy",
+    "rule_1": {
+      "rule_id": "GDPR_Art35_R1",
+      "entity": "controller",
+      "action": "process personal data",
+      "condition": "high risk to the rights and freedoms of data subjects",
+      "modality": "obligation",
+      "scope": "all processing activities",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "raw_text": "Where a type of processing in particular using new technologies, and taking into account the nature, scope, context and purposes of the processing, is likely to result in a high risk to the rights and freedoms of natural persons, the controller shall, prior to the processing, carry out an assessment of the impact of the envisaged processing operations on the protection of personal data.",
+      "source": "GDPR",
+      "article_number": 35,
+      "article_type": "definition",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "natural persons",
+      "not personal data",
+      "the controllers"
+    ],
+    "composite_score": 0.24,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Both rules deal with the transfer of personal data, but they do not conflict with each other.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C016",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art39_R3",
+      "entity": "data controller",
+      "action": "process personal data",
+      "condition": "at least one lawful basis exists",
+      "modality": "obligation",
+      "scope": "all processing activities",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "raw_text": "The data protection officer shall have at least the following tasks: to inform and advise the controller or the processor and the employees who carry out processing of their obligations pursuant to this Regulation and to other Union or Member State data protection provisions; to monitor compliance with this Regulation, with other Union or Member State data protection provisions and with the policies of the controller or processor in relation to the protection of personal data, including the assignment of responsibilities, awareness-raising and training of staff involved in processing operations, and the related audits;",
+      "source": "GDPR",
+      "article_number": 39,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "not personal data",
+      "processor",
+      "the controllers",
+      "this regulation"
+    ],
+    "composite_score": 0.56,
+    "confidence": 1.0,
+    "precedence": "rule_1",
+    "reasoning": "Rule 1 and Rule 2 have conditionally conflicting conditions: Rule 1: Entity is data controller and Action is process personal data. Rule 2: Entity is controller or processor and Action is transfer personal data to a third country or an international organisation.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C017",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art30_R1",
+      "entity": "controller, processor, their representatives",
+      "action": "cooperate on request with the supervisory authority in the performance of its tasks",
+      "condition": "none",
+      "modality": "obligation",
+      "scope": "all processing activities",
+      "references": [],
+      "raw_text": "Article 30(1) – Cooperation with the supervisory authority",
+      "source": "GDPR",
+      "article_number": 30,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R1",
+      "entity": "controller or processor",
+      "condition": "when transferring personal data to a third country or an international organisation",
+      "modality": "obligation",
+      "scope": "all personal data transfers",
+      "references": [
+        "INTL_DT_TRANSFER_1_R2"
+      ],
+      "raw_text": "The controller or processor shall ensure that the level of protection of natural persons guaranteed by this Regulation is not undermined when transferring personal data to a third country or an international organisation.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "processor"
+    ],
+    "composite_score": 0.56,
+    "confidence": 1.0,
+    "precedence": "rule_1",
+    "reasoning": "Both rules apply to processors. However, Rule 1 mandates cooperation on request with the supervisory authority, in contrast to Rule 2 which imposes no such requirement. This creates a conditional conflict where both rules might seem to be in conflict, but one rule applies in the presence of certain conditions, while the other rule applies in their absence.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C018",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art30_R1",
+      "entity": "controller, processor, their representatives",
+      "action": "cooperate on request with the supervisory authority in the performance of its tasks",
+      "condition": "none",
+      "modality": "obligation",
+      "scope": "all processing activities",
+      "references": [],
+      "raw_text": "Article 30(1) – Cooperation with the supervisory authority",
+      "source": "GDPR",
+      "article_number": 30,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "processor"
+    ],
+    "composite_score": 0.56,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Both rules apply to different conditions, thus creating a conditional conflict.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C019",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art31_R1",
+      "entity": "controller and processor and, where applicable, their representatives",
+      "action": "maintain a record of processing activities",
+      "condition": "none",
+      "modality": "obligation",
+      "scope": "all processing activities for which those controllers and processors are responsible",
+      "references": [
+        "GDPR_Art30"
+      ],
+      "raw_text": "Article 31 – Record of processing activities",
+      "source": "GDPR",
+      "article_number": 30,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "processor",
+      "the controllers"
+    ],
+    "composite_score": 0.56,
+    "confidence": 0.9,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1 applies to controller and processor entities obligations for maintaining records of processing activities. Rule 2 applies to international organization or third country entities and exceptions for providing adequate data protection. Both rules share concepts of processor, and controllers.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C020",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art33_R2",
+      "entity": "processor",
+      "action": "notify the controller about a personal data breach",
+      "condition": "immediately after becoming aware of it",
+      "modality": "obligation",
+      "scope": "all processing activities under the processor's responsibility",
+      "references": [
+        "GDPR_Art30",
+        "GDPR_Art34"
+      ],
+      "source": "GDPR",
+      "article_number": 33,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "processor",
+      "the controllers"
+    ],
+    "composite_score": 0.56,
+    "confidence": 1.0,
+    "precedence": "rule_1",
+    "reasoning": "Rule 1 imposes an obligation on a processor to notify a controller about a personal data breach. Rule 2 creates an exception to the data transfer rules when an international organization or third country provides adequate data protection, and the transfer is made in accordance with this Regulation or another legal instrument with binding effect for both parties.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C021",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art39_R1_2",
+      "entity": "controller and processor",
+      "action": "ensure access to personal data and processing operations is granted to the data protection officer in carrying out their tasks",
+      "condition": "article 39 requires controller and processor to support the data protection officer in carrying out their tasks",
+      "modality": "obligation",
+      "scope": "article 39 applies to all processing activities",
+      "references": [
+        "GDPR_Art37",
+        "GDPR_Art39_R1",
+        "GDPR_Art39_R1_2"
+      ],
+      "source": "GDPR",
+      "article_number": 39,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "processor"
+    ],
+    "composite_score": 0.56,
+    "confidence": 0.8,
+    "precedence": "rule_1",
+    "reasoning": "Rule 1 establishes an obligation for controllers and processors to support the data protection officer in carrying out their tasks. Rule 2 establishes an exception for international organizations or third countries when providing adequate data protection in accordance with this Regulation or another legal instrument.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C022",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art39_R3",
+      "entity": "data controller",
+      "action": "process personal data",
+      "condition": "at least one lawful basis exists",
+      "modality": "obligation",
+      "scope": "all processing activities",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "raw_text": "The data protection officer shall have at least the following tasks: to inform and advise the controller or the processor and the employees who carry out processing of their obligations pursuant to this Regulation and to other Union or Member State data protection provisions; to monitor compliance with this Regulation, with other Union or Member State data protection provisions and with the policies of the controller or processor in relation to the protection of personal data, including the assignment of responsibilities, awareness-raising and training of staff involved in processing operations, and the related audits;",
+      "source": "GDPR",
+      "article_number": 39,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "processor",
+      "regulation",
+      "the controllers",
+      "this regulation"
+    ],
+    "composite_score": 0.56,
+    "confidence": 0.8,
+    "precedence": "rule_1",
+    "reasoning": "Rule 1 imposes an obligation on a data controller to ensure at least one lawful basis exists before processing personal data. Rule 2 sets an exception for international organizations or third countries regarding adequate data protection. The conflict arises when both rules apply and there is only one lawful basis left for processing personal data. Based on the given rules, it appears that Rule 1 takes precedence over Rule 2 because Rule 1's obligation is more specific and requires action before processing personal data.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C023",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art40_R3",
+      "entity": "body as referred to in paragraph 1 of this Article",
+      "action": "take appropriate action",
+      "condition": "in cases of infringement of the code by a controller or processor",
+      "modality": "obligation",
+      "scope": "includes suspension or exclusion of the controller or processor concerned from the code",
+      "references": [
+        "GDPR_Art40_R2"
+      ],
+      "raw_text": "(1) Subject to appropriate safeguards, a body as referred to in paragraph 1 of this Article shall take appropriate action in cases of infringement of the code by a controller or processor. Such actions may include suspension or exclusion of the controller or processor concerned from the code. (2) It shall inform the competent supervisory authority of such actions and the reasons for taking them.",
+      "source": "GDPR",
+      "article_number": 40,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "processor",
+      "the controllers"
+    ],
+    "composite_score": 0.56,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1 imposes an obligation on entities to take appropriate actions when there is an infringement of the code. Rule 2 creates an exception for data protection when the data transfer is to an international organization or a third country in accordance with this Regulation or another legal instrument. Therefore, while Rules 1 and 2 have different actions and entities, they conditionally conflict as Rule 1 imposes an obligation, while Rule 2 creates an exception that can potentially override the obligation.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C024",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art26_R3",
+      "entity": "joint controllers",
+      "action": "transparently determine respective responsibilities for compliance",
+      "condition": "compliance with the obligations under the Regulation",
+      "modality": "administrative",
+      "scope": " Article 13 and Article 14",
+      "references": [
+        "Article 13",
+        "Article 14"
+      ],
+      "raw_text": "They shall in a transparent manner determine their respective responsibilities for compliance with the obligations under this Regulation, in particular as regards the exercising of the rights of the data subject and their respective duties to provide the information referred to in Articles 13 and 14, by means of an arrangement between them unless, and in so far as, the respective responsibilities of the controllers are determined by Union or Member State law to which the controllers are subject. The arrangement may designate a contact point for data subjects.",
+      "source": "GDPR",
+      "article_number": 26,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "regulation",
+      "the controllers",
+      "this regulation"
+    ],
+    "composite_score": 0.56,
+    "confidence": 0.8,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1 defines joint controllers and their obligation to comply with the GDPR. Rule 2 defines the obligations for data transfer to international organizations or third countries in accordance with the International Data Transfer Regulation. The two rules contain shared concepts, such as regulation, the controllers, and this regulation. However, the rules also contain conflicting conditions for compliance. Rule 1 requires compliance with the GDPR, which may place restrictions on data transfer to international organizations or third countries as defined in Rule 2. Rule 2 allows for data transfer to international organizations or third countries when providing adequate data protection and in accordance with certain legal instruments. However, Rule 2 does not specify which legal instruments are applicable and binding for both the controller or processor and the controller or recipient. This creates a potential conflict between the obligations to comply with the GDPR as defined in Rule 1 and the requirements for adequate data protection and compliance with certain legal instruments as defined in Rule 2.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C025",
+    "type": "exception",
+    "rule_1": {
+      "rule_id": "GDPR_Art11_R1",
+      "entity": "controller",
+      "action": "process personal data",
+      "condition": "no longer requires identification of data subject",
+      "modality": "permission",
+      "scope": "all processing activities",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "raw_text": "If the purposes for which a controller processes personal data do not or do no longer require the identification of a data subject by the controller, the controller shall not be obliged to maintain, acquire or process additional information in order to identify the data subject for the sole purpose of complying with this Regulation.",
+      "source": "GDPR",
+      "article_number": 11,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.85,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "the controllers",
+      "this regulation"
+    ],
+    "composite_score": 0.595,
+    "confidence": 1.0,
+    "precedence": "rule_2",
+    "reasoning": "Rule 1 allows for the controller to process personal data without the requirement of identification of the data subject. Rule 2 allows for the international organisation or third country to provide adequate data protection in accordance with the regulation. The exception in Rule 2 allows for the transfer of personal data to the international organisation or third country despite the absence of identification of the data subject. Therefore, the relationship between the two rules is one of exception.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C026",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art11_R2",
+      "entity": "controller",
+      "action": "inform data subject",
+      "condition": "unable to identify data subject",
+      "modality": "obligation",
+      "scope": "data subjects referred to in paragraph 1 of the article",
+      "references": [],
+      "raw_text": "Where, in cases referred to in paragraph 1 of this Article, the controller is able to demonstrate that it is not in a position to identify the data subject, the controller shall inform the data subject accordingly, if possible.",
+      "source": "GDPR",
+      "article_number": 11,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.85,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "the controllers"
+    ],
+    "composite_score": 0.595,
+    "confidence": 0.8,
+    "precedence": "ambiguous",
+    "reasoning": "The two rules apply to the same controllers but under different conditions. Rule 1 allows the controller to not identify the data subject under certain conditions. Rule 2 requires that international organizations or third countries provide adequate data protection when transferring data. These rules conditionally conflict as they might lead to inconsistent application of data protection frameworks.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C027",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art13_R1",
+      "entity": "controller",
+      "action": "provide data subject with information",
+      "condition": "at the time when personal data are obtained",
+      "modality": "obligation",
+      "scope": "all processing activities",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "raw_text": "Where personal data relating to a data subject are collected from the data subject, the controller shall, at the time when personal data are obtained, provide the data subject with all of the following information:",
+      "source": "GDPR",
+      "article_number": 13,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.85,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "the controllers"
+    ],
+    "composite_score": 0.595,
+    "confidence": 0.8,
+    "precedence": "ambiguous",
+    "reasoning": "The relationship between the two policy rules is conditional_conflict. This is because both rules apply to different actions performed by the controller, and the conditions under which each rule applies may conflict.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C028",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art20_R3",
+      "entity": "controller",
+      "action": "no longer process personal data",
+      "condition": "the controller demonstrates compelling legitimate grounds for the processing which override the interests, rights and freedoms of the data subject or for the establishment, exercise or defence of legal claims",
+      "modality": "obligation",
+      "scope": "personal data",
+      "references": [],
+      "source": "GDPR",
+      "article_number": [
+        20,
+        21
+      ],
+      "article_type": [
+        "enforcement",
+        "definition"
+      ],
+      "weights": {
+        "source": 1.0,
+        "article": 0.85,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "the controllers"
+    ],
+    "composite_score": 0.595,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1 specifies conditions under which the controller must no longer process personal data. Rule 2 specifies that when an international organization or third country provides adequate data protection, the controller or processor may be exempted from applying the data protection regulation, thereby allowing the processing of personal data. These conditions are conflicting as they point to opposite directions.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C029",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "GDPR_Art49_R1",
+      "entity": "the data subject",
+      "action": "is informed about the transfer",
+      "condition": "the data transfer is not repetitive, concerns only a limited number of data subjects, and is necessary for important reasons of public interest",
+      "modality": "obligation",
+      "scope": "all processing activities",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "raw_text": "The controller shall inform the supervisory authority of the transfer and the data subject of the transfer and on the compelling legitimate interests pursued. A transfer pursuant to point (g) of the first subparagraph of paragraph 1 shall not involve the entirety of the personal data or entire categories of the personal data contained in the register. Where the register is intended for consultation by persons having a legitimate interest, the controller shall ensure that the consultation does not result in the disclosure of personal data to unauthorised third parties. An inadvertent disclosure of personal data, which is made as a result of the application of a law, including a statute of limitation, shall not be considered a violation of this Regulation.",
+      "source": "GDPR",
+      "article_number": 49,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.75,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [
+      "the controllers",
+      "third",
+      "this regulation"
+    ],
+    "composite_score": 0.6,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1, with the lex specialis of False, establishes a condition for an exception based on Rule 1. Rule 2, with the lex specialis of False, also establishes a condition for an obligation. However, these conditions are in conflict as both Rules seek to apply to the same data transfer event. Therefore, the relationship between the two rules is conditional_conflict.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C030",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art6_R2",
+      "entity": "official authority or Union or Member State law",
+      "action": "carry out processing only under the control of official authority or when the processing is authorised by Union or Member State law providing for appropriate safeguards for the rights and freedoms of data subjects",
+      "condition": "None",
+      "modality": "obligation",
+      "scope": "all processing activities",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "source": "GDPR",
+      "article_number": 6,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 1.0,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [],
+    "composite_score": 0.7,
+    "confidence": 1.0,
+    "precedence": "ambiguous",
+    "reasoning": "Rule 1 creates an obligation for data processing, whereas Rule 2 creates an exception for data transfer to certain entities. Both rules cannot both be applied at the same time, leading to a conditional conflict.",
+    "rag_context_ids": [],
+    "explanation": ""
+  },
+  {
+    "conflict_id": "C031",
+    "type": "conditional_conflict",
+    "rule_1": {
+      "rule_id": "GDPR_Art37_R1",
+      "entity": "controller or processor",
+      "action": "designate a data protection officer",
+      "condition": "when required by Union or Member State law",
+      "modality": "obligation",
+      "scope": "group of undertakings, single data protection officer for several authorities or bodies, taking account of their organisational structure and size",
+      "references": [
+        "GDPR_Art7",
+        "GDPR_Art9"
+      ],
+      "source": "GDPR",
+      "article_number": 37,
+      "article_type": "administrative",
+      "weights": {
+        "source": 1.0,
+        "article": 0.8,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "rule_2": {
+      "rule_id": "INTL_DT_TRANSFER_1_R2",
+      "entity": "international organisation or third country",
+      "action": "when providing adequate data protection",
+      "condition": "in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient",
+      "modality": "exception",
+      "scope": "specific international data transfers",
+      "references": [],
+      "raw_text": "The international organisation or third country that provides adequate data protection in accordance with this Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient shall be considered an exception in relation to specific international data transfers.",
+      "source": "International Data Transfer Regulation",
+      "article_number": 45,
+      "article_type": "definition",
+      "weights": {
+        "source": 0.5,
+        "article": 0.3,
+        "severity": null,
+        "composite": null,
+        "lex_specialis": false
+      }
+    },
+    "shared_concepts": [],
+    "composite_score": 0.56,
+    "confidence": 0.8,
+    "precedence": "rule_1",
+    "reasoning": "Rule 1 imposes an obligation on controllers and processors to designate a data protection officer when required by Union or Member State law. Rule 2 imposes an exception on international organizations and third countries when they provide adequate data protection in accordance with the International Data Transfer Regulation or another legal instrument with binding effect for both the controller or processor and the controller or recipient.",
+    "rag_context_ids": [],
+    "explanation": ""
+  }
+]

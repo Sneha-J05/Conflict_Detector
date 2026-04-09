@@ -1,0 +1,47 @@
+1
+In the case of a personal data breach, the controller shall without undue delay and, where feasible, not later than 72 hours after having become aware of it, notify the personal data breach to the supervisory authority competent in accordance with 
+Article 55
+, unless the personal data breach is unlikely to result in a risk to the rights and freedoms of natural persons. 
+2
+Where the notification to the supervisory authority is not made within 72 hours, it shall be accompanied by reasons for the delay.
+
+The processor shall notify the controller without undue delay after becoming aware of a personal data breach.
+
+The notification referred to in paragraph 1 shall at least:
+
+describe the nature of the personal data breach including where possible, the categories and approximate number of data subjects concerned and the categories and approximate number of personal data records concerned;
+
+communicate the name and contact details of the data protection officer or other contact point where more information can be obtained;
+
+describe the likely consequences of the personal data breach;
+
+describe the measures taken or proposed to be taken by the controller to address the personal data breach, including, where appropriate, measures to mitigate its possible adverse effects.
+
+Where, and in so far as, it is not possible to provide the information at the same time, the information may be provided in phases without undue further delay.
+
+1
+The controller shall document any personal data breaches, comprising the facts relating to the personal data breach, its effects and the remedial action taken. 
+2
+That documentation shall enable the supervisory authority to verify compliance with this Article.
+
+(
+85
+) Notification Obligation of Breaches to the Supervisory Authority
+
+(
+87
+) Promptness of Reporting / Notification
+
+(
+88
+) Format and Procedures of the Notification
+
+←
+Art. 32 
+
+Art. 34 
+→
+
+Table of contents
+
+Report error
