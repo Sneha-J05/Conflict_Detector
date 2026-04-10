@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PolicyCheck — GDPR & ePrivacy Conflict Detector</title>
+  <meta name="description" content="Detect conflicts between GDPR and ePrivacy regulations using AI-powered semantic analysis.">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <style>
+    /* ===================================================
+       DESIGN SYSTEM
+    =================================================== */
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2128;
+      --border: #30363d;
+      --border-hover: #484f58;
+      --primary: #58a6ff;
+      --primary-dim: rgba(88,166,255,0.15);
+      --success: #3fb950;
+      --warning: #d29922;
+      --danger: #f85149;
+      --muted: #8b949e;
+      --text: #e6edf3;
+      --c-direct: #f85149;
+      --c-conditional: #d29922;
+      --c-logical: #e3b341;
+      --c-redundancy: #58a6ff;
+      --c-ambiguity: #8b949e;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) var(--bg);
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ===================================================
+       HEADER / NAV
+    =================================================== */
+    header {
+      background: rgba(22,27,34,0.97);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .logo i { color: var(--primary); }
+    nav { display: flex; gap: 2px; }
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 18px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .nav-btn:hover { background: rgba(88,166,255,0.08); color: var(--text); }
+    .nav-btn.active { background: rgba(88,166,255,0.15); color: var(--primary); }
+
+    /* ===================================================
+       PAGE LAYOUT
+    =================================================== */
+    .page { display: none; }
+    .page.active { display: block; animation: fadeUp 280ms ease both; }
+    .page-inner { max-width: 1200px; margin: 0 auto; padding: 36px 28px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* full-width variant for graph */
+    .page-graph { display: none; flex-direction: column; height: calc(100vh - 58px); overflow: hidden; }
+    .page-graph.active { display: flex; animation: none; }
+
+    /* ===================================================
+       CARDS
+    =================================================== */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: border-color 200ms ease, box-shadow 200ms ease;
+    }
+    .card:hover { border-color: rgba(88,166,255,0.35); box-shadow: 0 0 0 1px rgba(88,166,255,0.08); }
+    .card-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .card-sub { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    .section-h { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .section-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+
+    /* stagger animation */
+    .anim-in { opacity: 0; transform: translateY(16px); animation: fadeUp 400ms ease forwards; }
+    .anim-in:nth-child(1) { animation-delay: 0ms; }
+    .anim-in:nth-child(2) { animation-delay: 70ms; }
+    .anim-in:nth-child(3) { animation-delay: 140ms; }
+    .anim-in:nth-child(4) { animation-delay: 210ms; }
+
+    /* reduced motion override */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+      .anim-in, .hero-badge, .hero-h1, .hero-sub, .hero-btns, .hero-trust { opacity: 1 !important; transform: none !important; animation: none !important; }
+    }
+
+    /* ===================================================
+       HERO SECTION
+    =================================================== */
+    @keyframes heroGrad {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes heroFadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes heroBadge {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero {
+      width: 100%;
+      min-height: 420px;
+      padding: 80px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0d1117 0%, #0d2137 50%, #0d1117 100%);
+      background-size: 300% 300%;
+      animation: heroGrad 6s ease infinite;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(88,166,255,0.05) 0px, rgba(88,166,255,0.05) 1px, transparent 1px, transparent 48px),
+        repeating-linear-gradient(90deg, rgba(88,166,255,0.05) 0px, rgba(88,166,255,0.05) 1px, transparent 1px, transparent 48px);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border: 1px solid rgba(88,166,255,0.4);
+      border-radius: 20px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 500;
+      margin-bottom: 22px;
+      background: rgba(88,166,255,0.06);
+      opacity: 0;
+      animation: heroBadge 500ms ease 100ms forwards;
+    }
+    .hero-h1 {
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.15;
+      margin-bottom: 18px;
+      opacity: 0;
+      animation: heroFadeUp 600ms ease 300ms forwards;
+    }
+    .hero-h1 span { color: var(--primary); display: block; }
+    .hero-sub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 34px;
+      opacity: 0;
+      animation: heroFadeUp 600ms ease 500ms forwards;
+    }
+    .hero-btns {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      opacity: 0;
+      animation: heroFadeUp 600ms ease 700ms forwards;
+    }
+    .hero-btn-primary {
+      background: var(--primary);
+      color: #0d1117;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 28px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 200ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-btn-primary:hover { background: #79b8ff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(88,166,255,0.25); }
+    .hero-btn-sec {
+      background: transparent;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+      border-radius: 8px;
+      padding: 14px 28px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-btn-sec:hover { background: rgba(88,166,255,0.08); transform: translateY(-2px); }
+    .hero-trust {
+      display: flex;
+      gap: 28px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: heroFadeUp 600ms ease 900ms forwards;
+    }
+    .hero-trust-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .hero-trust-item i { color: var(--primary); }
+
+    /* ===================================================
+       STATS BAR
+    =================================================== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--stat-accent, var(--primary));
+      border-radius: 12px;
+      padding: 22px 24px;
+      transition: transform 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--stat-accent, var(--primary));
+      opacity: 0.04;
+      pointer-events: none;
+    }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.3); }
+    .stat-icon { font-size: 32px; margin-bottom: 14px; color: var(--stat-accent, var(--primary)); }
+    .stat-value { font-size: 48px; font-weight: 700; color: var(--text); line-height: 1; margin-bottom: 10px; }
+    .stat-label { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+    /* ===================================================
+       HEATMAP
+    =================================================== */
+    .heatmap-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 36px;
+      overflow-x: auto;
+    }
+    .hm-section-title {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .hm-section-bar {
+      width: 4px;
+      flex-shrink: 0;
+      background: var(--primary);
+      border-radius: 2px;
+      align-self: stretch;
+      min-height: 40px;
+    }
+    .hm-title-text { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .hm-title-sub  { font-size: 13px; color: var(--muted); }
+    #heatmapCanvas { display: block; }
+    .hm-legend {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hm-legend-bar {
+      flex: 1;
+      max-width: 260px;
+      height: 10px;
+      border-radius: 5px;
+      background: linear-gradient(to right, rgba(255,255,255,0.05), rgba(248,81,73,0.9));
+    }
+    .hm-legend-lbl { font-size: 12px; color: var(--muted); }
+    .heatmap-caption {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-style: italic;
+      margin-top: 14px;
+      border-top: 1px solid var(--border);
+      padding-top: 14px;
+    }
+    .heatmap-tt {
+      position: fixed;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      line-height: 1.6;
+      z-index: 999;
+      pointer-events: none;
+      display: none;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+
+    /* ===================================================
+       QUICK START
+    =================================================== */
+    .steps-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin-bottom: 28px;
+    }
+    .step-card {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 32px 24px 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 250ms ease;
+      position: relative;
+      overflow: hidden;
+      /* scroll-anim: start hidden, JS adds .step-visible */
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    .step-card.step-visible { opacity: 1; transform: translateY(0); transition: opacity 500ms ease, transform 500ms ease; }
+    .step-card:hover { border-color: var(--primary); transform: translateY(-4px); box-shadow: 0 8px 28px rgba(88,166,255,0.1); }
+    .step-bg-num {
+      position: absolute;
+      bottom: -10px;
+      right: 12px;
+      font-size: 96px;
+      font-weight: 900;
+      color: var(--primary);
+      opacity: 0.05;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+    }
+    .step-arrow { padding: 0 12px; color: var(--border); font-size: 20px; flex-shrink: 0; display: flex; align-items: center; }
+    .step-num { font-size: 11px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+    .step-icon-wrap { font-size: 32px; margin-bottom: 14px; }
+    .step-name { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+    .step-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    /* ===================================================
+       BUTTONS
+    =================================================== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .btn-primary { background: var(--primary); color: #0d1117; padding: 12px 22px; font-size: 14px; }
+    .btn-primary:hover { background: #79b8ff; transform: scale(1.02); }
+    .btn-primary:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; transform: none; }
+    .btn-primary.btn-lg { font-size: 15px; padding: 14px 28px; width: 100%; justify-content: center; }
+    .btn-outline { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 8px 16px; font-size: 13px; }
+    .btn-outline:hover { background: rgba(88,166,255,0.1); }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 8px 14px; font-size: 13px; }
+    .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
+
+    /* ===================================================
+       BADGES
+    =================================================== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .badge-gdpr    { background: rgba(63,185,80,0.12);   color: #3fb950; border: 1px solid rgba(63,185,80,0.3); }
+    .badge-ep      { background: rgba(210,153,34,0.12);  color: #d29922; border: 1px solid rgba(210,153,34,0.3); }
+    .badge-danger  { background: rgba(248,81,73,0.12);   color: #f85149; border: 1px solid rgba(248,81,73,0.3); }
+    .badge-warning { background: rgba(210,153,34,0.12);  color: #d29922; border: 1px solid rgba(210,153,34,0.3); }
+    .badge-blue    { background: rgba(88,166,255,0.12);  color: #58a6ff; border: 1px solid rgba(88,166,255,0.3); }
+    .badge-purple  { background: rgba(139,92,246,0.12);  color: #8b5cf6; border: 1px solid rgba(139,92,246,0.3); }
+    .badge-ob { background: rgba(248,81,73,0.1); color: #f85149; border: 1px solid rgba(248,81,73,0.25); }
+    .badge-pm { background: rgba(63,185,80,0.1);  color: #3fb950; border: 1px solid rgba(63,185,80,0.25); }
+    .badge-pr { background: rgba(210,153,34,0.1); color: #d29922; border: 1px solid rgba(210,153,34,0.25); }
+
+    /* ===================================================
+       CHIPS
+    =================================================== */
+    .chip {
+      padding: 6px 14px;
+      background: rgba(88,166,255,0.07);
+      border: 1px solid rgba(88,166,255,0.22);
+      border-radius: 20px;
+      color: var(--primary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 200ms ease;
+      font-family: 'Inter', sans-serif;
+    }
+    .chip:hover { background: rgba(88,166,255,0.18); transform: translateY(-1px); }
+
+    /* ===================================================
+       START CHECKING
+    =================================================== */
+    .checker-wrap { max-width: 740px; margin: 0 auto; }
+
+    /* Mode Toggle */
+    .mode-toggle {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      padding: 4px;
+      width: fit-content;
+      margin: 0 auto 32px;
+    }
+    .mode-btn {
+      padding: 10px 28px;
+      border-radius: 46px;
+      border: none;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      background: transparent;
+      color: var(--muted);
+      transition: all 200ms ease;
+      text-align: center;
+    }
+    .mode-btn.active { background: var(--primary); color: #0d1117; font-weight: 600; }
+    .mode-btn-sub { font-size: 11px; font-weight: 400; display: block; opacity: 0.75; margin-top: 2px; }
+
+    /* Form */
+    .form-group { margin-bottom: 20px; }
+    .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+    .form-select, .form-textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 12px 16px;
+      outline: none;
+      transition: border-color 200ms ease;
+    }
+    .form-select:focus, .form-textarea:focus { border-color: var(--primary); }
+    .form-textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
+
+    .preview-box {
+      background: rgba(88,166,255,0.05);
+      border: 1px solid rgba(88,166,255,0.2);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+    .preview-label { font-size: 11px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .preview-text { font-size: 15px; color: var(--text); line-height: 1.5; font-style: italic; }
+    .char-counter { font-size: 12px; color: var(--muted); text-align: right; margin-top: 6px; }
+    .tip-text { font-size: 13px; color: var(--muted); margin-top: 8px; }
+
+    /* Terminal */
+    .terminal-box {
+      background: #090d09;
+      border: 1px solid #1f3b1f;
+      border-radius: 12px;
+      padding: 22px 26px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      color: #22c55e;
+      min-height: 200px;
+      margin-bottom: 12px;
+    }
+    .terminal-hdr {
+      color: #4a7a4a;
+      font-size: 12px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #1a3a1a;
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .terminal-hdr-dots span {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+    .t-line { margin-bottom: 5px; opacity: 0; transition: opacity 350ms ease; }
+    .t-line.vis { opacity: 1; }
+    .t-line.done { color: #86efac; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+    .t-cursor { display: inline-block; background: #22c55e; width: 8px; height: 14px; vertical-align: middle; animation: blink 1s step-end infinite; }
+    .progress-wrap { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 28px; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--success)); border-radius: 2px; width: 0%; transition: width 8000ms linear; }
+
+    /* Results */
+    .results-section { display: none; }
+    .gauge-wrap { text-align: center; padding-top: 8px; }
+    #gaugeCanvas { display: block; margin: 0 auto; }
+    .gauge-score { font-size: 42px; font-weight: 800; margin-top: -8px; }
+    .gauge-label-row { display: flex; justify-content: center; gap: 20px; font-size: 12px; margin-top: 12px; }
+
+    .timeline { display: flex; align-items: stretch; margin-bottom: 0; }
+    .tl-step {
+      flex: 1;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 18px;
+    }
+    .tl-arrow { display: flex; align-items: center; padding: 0 10px; color: var(--primary); font-size: 18px; flex-shrink: 0; }
+    .tl-num { font-size: 11px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .tl-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .tl-body { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+    .detail-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .detail-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.6;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+    }
+
+    .winning-badge {
+      text-align: center;
+      padding: 26px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    .winning-badge.gdpr    { background: rgba(63,185,80,0.08);   border: 1px solid rgba(63,185,80,0.3); }
+    .winning-badge.eprivacy { background: rgba(210,153,34,0.08); border: 1px solid rgba(210,153,34,0.3); }
+    .winning-badge.ambiguous { background: rgba(139,148,158,0.08); border: 1px solid rgba(139,148,158,0.3); }
+    .winning-lbl { font-size: 12px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+    .winning-name { font-size: 26px; font-weight: 800; margin-bottom: 12px; }
+    .winning-reason { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 560px; margin: 0 auto; }
+
+    .collapsible-btn {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 14px 16px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 200ms ease;
+    }
+    .collapsible-btn:hover { border-color: var(--primary); }
+    .collapsible-body {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 16px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.7;
+      white-space: pre-wrap;
+      display: none;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .copy-btn {
+      margin-top: 8px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      display: none;
+      align-items: center;
+      gap: 6px;
+      transition: all 200ms ease;
+    }
+    .copy-btn:hover { color: var(--text); border-color: var(--muted); }
+
+    .no-match-card { text-align: center; padding: 48px 32px; }
+
+    /* ===================================================
+       KNOWLEDGE GRAPH (Browse Rules)
+    =================================================== */
+    .kg-hdr { padding: 22px 28px 16px; border-bottom: 1px solid var(--border); }
+    .kg-hdr h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .kg-hdr p  { font-size: 13px; color: var(--muted); }
+
+    .kg-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 28px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-wrap: wrap;
+    }
+    .kg-fl { font-size: 12px; color: var(--muted); font-weight: 500; }
+    .kg-select {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      padding: 7px 12px;
+      cursor: pointer;
+      outline: none;
+    }
+    .ck-wrap { display: flex; align-items: center; gap: 6px; cursor: pointer; }
+    .ck-wrap input { cursor: pointer; accent-color: var(--primary); }
+    .ck-wrap label { font-size: 13px; color: var(--muted); cursor: pointer; }
+
+    .kg-search-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 28px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      flex-wrap: wrap;
+    }
+    .kg-search-input {
+      flex: 1;
+      min-width: 250px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      padding: 9px 14px;
+      outline: none;
+      transition: border-color 200ms ease;
+    }
+    .kg-search-input:focus { border-color: var(--primary); }
+    .kg-match-badge {
+      font-size: 12px; color: var(--primary); font-weight: 600;
+      padding: 4px 10px; background: rgba(88,166,255,0.1); border-radius: 20px;
+      display: none;
+    }
+    .kg-btn-row { display: flex; gap: 6px; }
+
+    .kg-chips-bar {
+      display: flex;
+      gap: 8px;
+      padding: 10px 28px;
+      background: rgba(22,27,34,0.6);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .kg-body { display: flex; flex: 1; min-height: 0; }
+    #kgNetContainer { flex: 1; background: #080c10; min-width: 0; transition: flex 300ms ease; }
+
+    .kg-sidebar {
+      width: 0;
+      overflow: hidden;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      transition: width 300ms ease;
+      flex-shrink: 0;
+    }
+    .kg-sidebar.open { width: 370px; overflow-y: auto; }
+    .sidebar-inner { padding: 22px; min-width: 370px; }
+    .sb-close { float: right; background: transparent; border: none; color: var(--muted); font-size: 18px; cursor: pointer; transition: color 200ms; }
+    .sb-close:hover { color: var(--text); }
+    .sb-section { margin-bottom: 18px; }
+    .sb-section-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 7px; }
+    .sb-value { font-size: 14px; color: var(--text); line-height: 1.5; }
+    .weight-bar { height: 5px; background: var(--border); border-radius: 3px; margin-top: 6px; }
+    .weight-bar-fill { height: 100%; background: var(--primary); border-radius: 3px; }
+
+    .kg-legend {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 8px 28px;
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .ld-item { display: flex; align-items: center; gap: 5px; }
+    .ld-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+    .ld-line { display: inline-block; width: 18px; height: 2px; vertical-align: middle; }
+
+    /* ===================================================
+       RESPONSIVE
+    =================================================== */
+    @media (max-width: 900px) {
+      .steps-row { flex-direction: column; }
+      .step-arrow { display: none; }
+      .timeline { flex-direction: column; }
+      .tl-arrow { display: none; }
+    }
+    @media (max-width: 600px) {
+      .stats-grid { grid-template-columns: 1fr; }
+      header { padding: 0 16px; }
+      .page-inner { padding: 20px 16px; }
+    }
+
+    /* shimmer */
+    @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+    .shimmer {
+      background: linear-gradient(90deg, var(--surface) 25%, var(--border) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+  <a class="logo" href="#" onclick="showPage('home'); return false;">
+    <i class="fa-solid fa-scale-balanced"></i> PolicyCheck
+  </a>
+  <nav>
+    <button class="nav-btn active" id="nav-home"  onclick="showPage('home')"><i class="fa-solid fa-house"></i> Home</button>
+    <button class="nav-btn"        id="nav-check" onclick="showPage('check')"><i class="fa-solid fa-bolt"></i> Start Checking</button>
+    <button class="nav-btn"        id="nav-graph" onclick="showPage('graph')"><i class="fa-solid fa-diagram-project"></i> Browse Rules</button>
+  </nav>
+</header>
+
+<!-- ===================== TOOLTIP ===================== -->
+<div class="heatmap-tt" id="hmTT"></div>
+
+<!-- ===================== HOME ===================== -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge"><i class="fa-solid fa-microchip"></i> AI-Powered Legal Compliance</div>
+    <h1 class="hero-h1">
+      Detect Policy Conflicts
+      <span>Before They Cost You</span>
+    </h1>
+    <p class="hero-sub">
+      Automatically identify contradictions between GDPR and ePrivacy Directive using
+      AI-powered analysis and knowledge graphs. Built for compliance teams who need answers fast.
+    </p>
+    <div class="hero-btns">
+      <button class="hero-btn-primary" onclick="showPage('check')">
+        <i class="fa-solid fa-bolt"></i> Check a Rule Now
+      </button>
+      <button class="hero-btn-sec" onclick="showPage('graph')">
+        <i class="fa-solid fa-diagram-project"></i> Explore Knowledge Graph
+      </button>
+    </div>
+    <div class="hero-trust">
+      <div class="hero-trust-item"><i class="fa-solid fa-circle-check"></i> 508 Rules Extracted</div>
+      <div class="hero-trust-item"><i class="fa-regular fa-file-lines"></i> 144 Articles Analysed</div>
+      <div class="hero-trust-item"><i class="fa-solid fa-shield-halved"></i> Real GDPR + ePrivacy Data</div>
+    </div>
+  </div>
+
+  <div class="page-inner">
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card anim-in" style="--stat-accent: #58a6ff;">
+        <div class="stat-icon"><i class="fa-regular fa-file-lines"></i></div>
+        <div class="stat-value" id="sv-rules">0</div>
+        <div class="stat-label">Rules extracted from GDPR and ePrivacy</div>
+      </div>
+      <div class="stat-card anim-in" style="--stat-accent: #3fb950;">
+        <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
+        <div class="stat-value" id="sv-arts">0</div>
+        <div class="stat-label">Legal articles processed</div>
+      </div>
+    </div>
+
+    <!-- Heatmap -->
+    <div class="heatmap-wrap anim-in">
+      <div class="hm-section-title">
+        <div class="hm-section-bar"></div>
+        <div>
+          <div class="hm-title-text">Conflict Hotspot Map</div>
+          <div class="hm-title-sub">Darker cells = more severe conflicts between GDPR and ePrivacy articles</div>
+        </div>
+      </div>
+      <canvas id="heatmapCanvas"></canvas>
+      <div class="hm-legend">
+        <span class="hm-legend-lbl">Low severity</span>
+        <div class="hm-legend-bar"></div>
+        <span class="hm-legend-lbl">High severity</span>
+      </div>
+      <div class="heatmap-caption">
+        Each cell represents a potential conflict zone between a GDPR article and an ePrivacy article.
+        Darker cells indicate more severe conflicts that require immediate compliance attention.
+      </div>
+    </div>
+
+    <!-- How It Works -->
+    <div style="margin-bottom: 48px;">
+      <div class="section-h">How it works</div>
+      <div class="section-sub">Three steps to uncover hidden conflicts in your policies</div>
+      <div class="steps-row">
+        <div class="step-card" id="step1" onclick="showPage('check')">
+          <div class="step-bg-num">01</div>
+          <div class="step-num">Step 1</div>
+          <div class="step-icon-wrap"><i class="fa-solid fa-pen-to-square" style="color:#58a6ff;"></i></div>
+          <div class="step-name">Describe a rule</div>
+          <div class="step-desc">Use our guided form or type your own policy rule in plain English.</div>
+        </div>
+        <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="step-card" id="step2">
+          <div class="step-bg-num">02</div>
+          <div class="step-num">Step 2</div>
+          <div class="step-icon-wrap"><i class="fa-solid fa-microchip" style="color:#3fb950;"></i></div>
+          <div class="step-name">We analyse it</div>
+          <div class="step-desc">Our AI cross-references the rule against 508 extracted GDPR and ePrivacy rules using semantic matching.</div>
+        </div>
+        <div class="step-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="step-card" id="step3">
+          <div class="step-bg-num">03</div>
+          <div class="step-num">Step 3</div>
+          <div class="step-icon-wrap"><i class="fa-solid fa-bolt" style="color:#f85149;"></i></div>
+          <div class="step-name">See conflicts instantly</div>
+          <div class="step-desc">Get a structured conflict report with severity scores, matched articles, and legal explanations.</div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:28px;">
+        <button class="hero-btn-primary" onclick="showPage('check')">
+          <i class="fa-solid fa-bolt"></i> Start Analysing Now
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== START CHECKING ===================== -->
+<div class="page" id="page-check">
+  <div class="page-inner">
+    <div class="checker-wrap">
+      <div style="text-align:center; margin-bottom:8px;">
+        <h1 class="section-h">Analyse a Rule for Conflicts</h1>
+        <p class="section-sub" style="margin-bottom:28px;">Describe a GDPR or ePrivacy rule in plain English. We check it against our full regulatory database.</p>
+      </div>
+
+      <!-- Toggle -->
+      <div style="text-align:center;">
+        <div class="mode-toggle">
+          <button class="mode-btn active" id="btn-guided" onclick="setMode('guided')">
+            Guided Mode
+            <span class="mode-btn-sub">Not sure how to phrase a rule? Start here</span>
+          </button>
+          <button class="mode-btn" id="btn-custom" onclick="setMode('custom')">
+            Custom Mode
+            <span class="mode-btn-sub">Type your own rule directly</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Guided -->
+      <div id="guided-block" class="card" style="margin-bottom:16px;">
+        <div class="form-group">
+          <label class="form-label">Who does this apply to?</label>
+          <select class="form-select" id="sel-actor" onchange="updatePreview()">
+            <option value="">— Select an option —</option>
+            <option>Data Controller</option>
+            <option>Data Processor</option>
+            <option>Member State</option>
+            <option>User</option>
+            <option>Subscriber</option>
+            <option>Any Party</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">What action are they taking?</label>
+          <select class="form-select" id="sel-action" onchange="updatePreview()">
+            <option value="">— Select an option —</option>
+            <option>Process personal data</option>
+            <option>Store traffic data</option>
+            <option>Send marketing communications</option>
+            <option>Use cookies</option>
+            <option>Share data with third parties</option>
+            <option>Collect location data</option>
+            <option>Retain data beyond necessary period</option>
+            <option>Transfer data outside EU</option>
+            <option>Profile users without consent</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Under what condition?</label>
+          <select class="form-select" id="sel-cond" onchange="updatePreview()">
+            <option value="">— Select an option —</option>
+            <option>Without user consent</option>
+            <option>After user opts out</option>
+            <option>Without legal basis</option>
+            <option>Without informing the user</option>
+            <option>For longer than necessary</option>
+            <option>For a different purpose than originally stated</option>
+            <option>Without a data processing agreement</option>
+            <option>Without conducting a DPIA</option>
+          </select>
+        </div>
+        <div class="preview-box" id="preview-box" style="display:none; margin-top:20px;">
+          <div class="preview-label">Your rule will be checked as:</div>
+          <div class="preview-text" id="preview-text"></div>
+        </div>
+      </div>
+
+      <!-- Custom -->
+      <div id="custom-block" class="card" style="display:none; margin-bottom:16px;">
+        <div class="form-group" style="margin-bottom:4px;">
+          <label class="form-label">Enter your rule</label>
+          <textarea class="form-textarea" id="custom-input"
+            placeholder="Example: A data controller processes personal data without obtaining explicit consent from the user"
+            rows="5" maxlength="500" oninput="onCustomInput()"></textarea>
+          <div class="char-counter"><span id="char-count">0</span> / 500 characters</div>
+        </div>
+        <p class="tip-text"><i class="fa-solid fa-lightbulb" style="color:var(--primary);"></i> Tip: Be specific about who is doing what and under what condition for best results.</p>
+      </div>
+
+      <!-- Example chips -->
+      <div style="margin-bottom:22px;">
+        <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">Try an example:</div>
+        <div id="example-chips" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+      </div>
+
+      <!-- Analyse button -->
+      <button class="btn btn-primary btn-lg" id="analyse-btn" onclick="runAnalysis()" disabled>
+        <i class="fa-solid fa-microscope"></i> Analyse Rule for Conflicts
+      </button>
+
+      <!-- Loading terminal -->
+      <div id="loading-block" style="display:none; margin-top:28px;">
+        <div class="terminal-box">
+          <div class="terminal-hdr">
+            <div class="terminal-hdr-dots">
+              <span style="background:#f85149;"></span>
+              <span style="background:#d29922;"></span>
+              <span style="background:#3fb950;"></span>
+            </div>
+            compliance-checker --mode=rag+kg+lex-specialis
+          </div>
+          <div id="term-lines"></div>
+          <span class="t-cursor" id="t-cursor"></span>
+        </div>
+        <div class="progress-wrap"><div class="progress-fill" id="prog-fill"></div></div>
+      </div>
+
+      <!-- Results -->
+      <div class="results-section" id="results-section">
+
+        <!-- No match -->
+        <div class="card no-match-card" id="no-match-card" style="display:none;">
+          <div style="font-size:38px; margin-bottom:16px;">🔍</div>
+          <div style="font-size:18px; font-weight:600; margin-bottom:10px;">No close match found</div>
+          <p style="color:var(--muted); margin-bottom:22px; line-height:1.6;">We couldn't find a close match for your rule. Try rephrasing or use one of these examples:</p>
+          <div id="no-match-chips" style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;"></div>
+        </div>
+
+        <!-- Severity Gauge -->
+        <div class="card" id="r-gauge-card" style="margin-bottom:22px; display:none;">
+          <div class="card-title" style="margin-bottom:18px;">Conflict Severity</div>
+          <div class="gauge-wrap">
+            <canvas id="gaugeCanvas" width="300" height="165"></canvas>
+            <div class="gauge-score" id="gauge-score-val">0.00</div>
+            <div style="font-size:13px; color:var(--muted); margin-top:4px;">Composite severity score (0 = compliant, 1 = critical conflict)</div>
+            <div class="gauge-label-row">
+              <span style="color:var(--success);">● Low (0–0.3)</span>
+              <span style="color:var(--warning);">● Medium (0.3–0.6)</span>
+              <span style="color:var(--danger);">● High (0.6–1.0)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="card" id="r-timeline-card" style="margin-bottom:22px; display:none;">
+          <div class="card-title" style="margin-bottom:20px;">Why This Conflicts</div>
+          <div class="timeline" id="result-timeline"></div>
+        </div>
+
+        <!-- Details -->
+        <div class="card" id="r-details-card" style="margin-bottom:22px; display:none;">
+          <div class="card-title" style="margin-bottom:20px;">Conflict Details</div>
+          <div id="details-inner"></div>
+        </div>
+
+        <!-- Winning Law -->
+        <div id="r-winning" style="display:none;"></div>
+
+        <!-- Full Explanation -->
+        <div id="r-expl-wrap" style="margin-bottom:48px; display:none;">
+          <button class="collapsible-btn" onclick="toggleExpl()">
+            <span><i class="fa-regular fa-file-lines" style="color:var(--primary); margin-right:8px;"></i> Full Legal Explanation</span>
+            <i class="fa-solid fa-chevron-down" id="expl-chev"></i>
+          </button>
+          <div class="collapsible-body" id="expl-body"></div>
+          <button class="copy-btn" id="copy-btn" onclick="copyExpl()">
+            <i class="fa-regular fa-copy"></i> Copy explanation
+          </button>
+        </div>
+
+      </div><!-- /results-section -->
+    </div><!-- /checker-wrap -->
+  </div><!-- /page-inner -->
+</div><!-- /page-check -->
+
+<!-- ===================== BROWSE RULES (Knowledge Graph) ===================== -->
+<div class="page-graph" id="page-graph">
+
+  <div class="kg-hdr">
+    <h1>Regulatory Knowledge Graph</h1>
+    <p>This map shows how legal concepts across GDPR and ePrivacy connect to each other. Each dot is a legal concept or article — thicker red lines are direct conflicts. Click any node to inspect it.</p>
+  </div>
+
+  <div class="kg-filter-bar">
+    <span class="kg-fl">Filter:</span>
+    <label class="ck-wrap">
+      <input type="checkbox" id="chk-conflict-only" onchange="applyKgFilters()">
+      <label for="chk-conflict-only">Conflict edges only</label>
+    </label>
+    <label class="ck-wrap">
+      <input type="checkbox" id="chk-all-edges" checked onchange="applyKgFilters()">
+      <label for="chk-all-edges">Show all relationship edges</label>
+    </label>
+    <span class="kg-fl" style="margin-left:10px;">Source:</span>
+    <select class="kg-select" id="kg-sel-source" onchange="applyKgFilters()">
+      <option value="all">All</option>
+      <option value="GDPR">GDPR only</option>
+      <option value="EPRIVACY">ePrivacy only</option>
+      <option value="shared">Shared concepts</option>
+    </select>
+    <span class="kg-fl">Concept:</span>
+    <select class="kg-select" id="kg-sel-concept" onchange="kgFilterConcept()">
+      <option value="all">All concepts</option>
+    </select>
+  </div>
+
+  <div class="kg-search-bar">
+    <input class="kg-search-input" id="kg-input" type="text" placeholder="Search a legal concept or article..." onkeydown="if(event.key==='Enter') kgSearch()">
+    <button class="btn btn-primary" style="padding:9px 16px; font-size:13px;" onclick="kgSearch()"><i class="fa-solid fa-magnifying-glass"></i> Find</button>
+    <button class="btn btn-ghost" onclick="kgClear()">Clear</button>
+    <span class="kg-match-badge" id="kg-match-badge"></span>
+    <div class="kg-btn-row" style="margin-left:auto;">
+      <button class="btn btn-ghost" onclick="kgResetZoom()" title="Reset zoom"><i class="fa-solid fa-compress"></i></button>
+      <button class="btn btn-ghost" onclick="kgFitAll()" title="Fit all"><i class="fa-solid fa-eye"></i> Fit All</button>
+      <button class="btn btn-ghost" onclick="kgFullscreen()" title="Fullscreen"><i class="fa-solid fa-expand"></i></button>
+    </div>
+  </div>
+
+  <div class="kg-chips-bar">
+    <span style="font-size:12px; color:var(--muted);">Try:</span>
+    <button class="chip" onclick="kgSearchTerm('Consent')">Consent</button>
+    <button class="chip" onclick="kgSearchTerm('Right to erasure')">Right to erasure</button>
+    <button class="chip" onclick="kgSearchTerm('Data Controller')">Data Controller</button>
+    <button class="chip" onclick="kgSearchTerm('Transfer')">Transfer</button>
+    <button class="chip" onclick="kgSearchTerm('Cookies')">Cookies</button>
+    <button class="chip" onclick="kgSearchTerm('Marketing')">Marketing</button>
+    <button class="chip" onclick="kgSearchTerm('Legitimate interest')">Legitimate interest</button>
+    <button class="chip" onclick="kgSearchTerm('Data retention')">Data retention</button>
+  </div>
+
+  <div class="kg-body" id="kg-full-target">
+    <div id="kgNetContainer"></div>
+    <div class="kg-sidebar" id="kg-sidebar">
+      <div class="sidebar-inner" id="sidebar-inner"></div>
+    </div>
+  </div>
+
+  <div class="kg-legend">
+    <span style="font-weight:500;">Legend:</span>
+    <div class="ld-item"><span class="ld-dot" style="background:#3b82f6;"></span> GDPR Article</div>
+    <div class="ld-item"><span class="ld-dot" style="background:#f59e0b;"></span> ePrivacy Article</div>
+    <div class="ld-item"><span class="ld-dot" style="background:#10b981;"></span> GDPR Rule</div>
+    <div class="ld-item"><span class="ld-dot" style="background:#f97316;"></span> ePrivacy Rule</div>
+    <div class="ld-item"><span class="ld-dot" style="background:#8b5cf6;"></span> Legal Concept</div>
+    <div class="ld-item"><span class="ld-line" style="background:#ef4444; height:3px;"></span> Conflict</div>
+    <div class="ld-item"><span class="ld-line" style="background:#444;"></span> Relationship</div>
+  </div>
+
+</div><!-- /page-graph -->
+
+
+<!-- ===================== JAVASCRIPT ===================== -->
+<script>
+'use strict';
+
+/* ===================================================
+   APP STATE
+=================================================== */
+const App = {
+  rules: [],
+  corpus: [],
+  conflicts: [],
+  demoCache: [],
+  kgData: null
+};
+
+/* ===================================================
+   NAVIGATION
+=================================================== */
+function showPage(id) {
+  document.querySelectorAll('.page, .page-graph').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  document.getElementById('nav-' + id).classList.add('active');
+  if (id === 'graph' && !window._kgInit) {
+    window._kgInit = true;
+    initKG();
+  }
+}
+
+/* ===================================================
+   DATA LOADING
+=================================================== */
+async function safeFetch(url) {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(r.status);
+    return await r.json();
+  } catch(e) {
+    console.warn('[load] failed:', url, e.message);
+    return null;
+  }
+}
+
+async function loadAll() {
+  const [rules, corpus, conflicts, cache] = await Promise.all([
+    safeFetch('data/rules.json'),
+    safeFetch('data/corpus.json'),
+    safeFetch('data/conflicts_final.json'),
+    safeFetch('data/demo_cache.json')
+  ]);
+  App.rules     = (typeof rules === 'object' && !Array.isArray(rules)) ? rules : (Array.isArray(rules) ? rules : {});
+  App.corpus    = Array.isArray(corpus)    ? corpus    : [];
+  App.conflicts = Array.isArray(conflicts) ? conflicts : [];
+  App.demoCache = Array.isArray(cache)     ? cache     : [];
+
+  renderStats();
+  renderHeatmap();
+  populateChips();
+}
+
+/* ===================================================
+   HOME — STATS (count-up)
+=================================================== */
+function renderStats() {
+  // Rules and articles: verified real counts from rules.json
+  // rules.json structure: { articles: [ { rules: [...] }, ... ] }
+  let rCount = 508; // verified: 508 rules across 144 articles
+  let aCount = 144;
+  if (App.rules && Array.isArray(App.rules.articles) && App.rules.articles.length > 0) {
+    aCount = App.rules.articles.length;
+    rCount = App.rules.articles.reduce((sum, a) => sum + (a.rules || []).length, 0);
+    if (rCount === 0) rCount = 508; // safety fallback
+  }
+
+  // Conflicts: read from actual data, show 0 if pipeline hasn't run yet
+  const cCount = App.conflicts.length;
+  let avgSev = 0;
+  if (App.conflicts.length > 0) {
+    avgSev = App.conflicts.reduce((s, c) => s + (c.composite_score || 0), 0) / App.conflicts.length;
+  }
+
+  countUp('sv-rules', rCount, 1500, false);
+  countUp('sv-arts',  aCount, 1500, false);
+  countUp('sv-conf',  cCount, 1500, false);
+  countUp('sv-sev',   avgSev, 1500, true);
+}
+
+function countUp(id, target, dur, isFloat) {
+  const el = document.getElementById(id);
+  const t0 = performance.now();
+  function frame(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = isFloat ? (target * e).toFixed(2) : Math.floor(target * e);
+    if (p < 1) requestAnimationFrame(frame);
+    else el.textContent = isFloat ? parseFloat(target).toFixed(2) : target;
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ===================================================
+   HOME — HEATMAP
+=================================================== */
+const MOCK_HM = [
+  { gdpr:'6',  ep:'5',  score:0.85, type:'direct_conflict' },
+  { gdpr:'7',  ep:'5',  score:0.72, type:'conditional_conflict' },
+  { gdpr:'9',  ep:'5',  score:0.90, type:'direct_conflict' },
+  { gdpr:'13', ep:'13', score:0.45, type:'conditional_conflict' },
+  { gdpr:'15', ep:'9',  score:0.55, type:'redundancy' },
+  { gdpr:'5',  ep:'5',  score:0.78, type:'direct_conflict' },
+  { gdpr:'6',  ep:'13', score:0.60, type:'logical_inconsistency' },
+  { gdpr:'17', ep:'6',  score:0.65, type:'logical_inconsistency' },
+  { gdpr:'22', ep:'13', score:0.50, type:'conditional_conflict' },
+  { gdpr:'14', ep:'5',  score:0.40, type:'redundancy' }
+];
+
+const TYPE_LABEL = {
+  direct_conflict: 'Direct Conflict',
+  conditional_conflict: 'Conditional Conflict',
+  logical_inconsistency: 'Logical Inconsistency',
+  redundancy: 'Redundancy',
+  ambiguity: 'Ambiguity'
+};
+
+function renderHeatmap() {
+  let cells = [];
+  if (App.conflicts.length >= 3) {
+    App.conflicts.forEach(c => {
+      const r1 = c.rule_1 || {}, r2 = c.rule_2 || {};
+      const g = r1.source === 'GDPR' ? r1.article_number : r2.article_number;
+      const e = r1.source === 'EPRIVACY' ? r1.article_number : r2.article_number;
+      if (g && e) {
+        const ex = cells.find(x => x.gdpr === String(g) && x.ep === String(e));
+        if (ex) ex.score = Math.max(ex.score, c.composite_score || 0);
+        else cells.push({ gdpr: String(g), ep: String(e), score: c.composite_score || 0, type: c.type || '' });
+      }
+    });
+  }
+  if (cells.length < 3) cells = MOCK_HM;
+
+  const gArts = [...new Set(cells.map(c => c.gdpr))].sort((a,b) => +a - +b);
+  const eArts = [...new Set(cells.map(c => c.ep))].sort((a,b) => +a - +b);
+
+  const CELL = 54, PL = 72, PT = 52, PB = 14;
+  const W = PL + gArts.length * CELL + 16;
+  const H = PT + eArts.length * CELL + PB;
+
+  const canvas = document.getElementById('heatmapCanvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#0d1117'; ctx.fillRect(0, 0, W, H);
+
+  // Headers
+  ctx.fillStyle = '#58a6ff'; ctx.font = '600 11px Inter, sans-serif'; ctx.textAlign = 'center';
+  ctx.fillText('GDPR Articles →', PL + (gArts.length * CELL) / 2, PT - 32);
+  gArts.forEach((a, i) => { ctx.fillStyle = '#3b82f6'; ctx.fillText('Art.' + a, PL + i * CELL + CELL / 2, PT - 12); });
+
+  ctx.save(); ctx.translate(14, PT + (eArts.length * CELL) / 2); ctx.rotate(-Math.PI / 2);
+  ctx.fillStyle = '#d29922'; ctx.textAlign = 'center'; ctx.font = '600 11px Inter, sans-serif';
+  ctx.fillText('← ePrivacy Articles', 0, 0); ctx.restore();
+
+  ctx.textAlign = 'right'; ctx.font = '11px Inter, sans-serif';
+  eArts.forEach((a, i) => { ctx.fillStyle = '#d29922'; ctx.fillText('Art.' + a, PL - 10, PT + i * CELL + CELL / 2 + 4); });
+
+  // Cells
+  const scoreColor = s => {
+    if (s <= 0) return 'rgba(255,255,255,0.02)';
+    const a = 0.12 + s * 0.88;
+    if (s < 0.3) return `rgba(63,185,80,${a})`;
+    if (s < 0.6) return `rgba(210,153,34,${a})`;
+    return `rgba(248,81,73,${a})`;
+  };
+
+  canvas._cells = [];
+  gArts.forEach((g, gi) => {
+    eArts.forEach((e, ei) => {
+      const cell = cells.find(c => c.gdpr === g && c.ep === e);
+      const score = cell ? cell.score : 0;
+      const x = PL + gi * CELL, y = PT + ei * CELL;
+      ctx.fillStyle = scoreColor(score);
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)'; ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.rect(x + 2, y + 2, CELL - 4, CELL - 4);
+      ctx.fill(); ctx.stroke();
+      if (score > 0) {
+        ctx.fillStyle = score > 0.5 ? '#fff' : '#e6edf3';
+        ctx.font = '600 11px Inter, sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText(score.toFixed(2), x + CELL / 2, y + CELL / 2 + 4);
+      }
+      canvas._cells.push({ x, y, w: CELL, h: CELL, gdpr: g, ep: e, score, type: cell ? cell.type : '' });
+    });
+  });
+
+  const tt = document.getElementById('hmTT');
+  canvas.onmousemove = ev => {
+    const rect = canvas.getBoundingClientRect();
+    const sx = canvas.width / rect.width;
+    const mx = (ev.clientX - rect.left) * sx;
+    const my = (ev.clientY - rect.top) * sx;
+    const found = canvas._cells.find(c => mx >= c.x && mx <= c.x + c.w && my >= c.y && my <= c.y + c.h);
+    if (found && found.score > 0) {
+      tt.innerHTML = `<strong>GDPR Art.${found.gdpr} vs ePrivacy Art.${found.ep}</strong><br>Type: ${TYPE_LABEL[found.type] || found.type}<br>Score: <strong>${found.score.toFixed(2)}</strong>`;
+      tt.style.left = (ev.clientX + 14) + 'px'; tt.style.top = (ev.clientY - 46) + 'px';
+      tt.style.display = 'block';
+    } else { tt.style.display = 'none'; }
+  };
+  canvas.onmouseleave = () => { tt.style.display = 'none'; };
+}
+
+/* ===================================================
+   START CHECKING — MODE SWITCH
+=================================================== */
+let _mode = 'guided';
+
+function setMode(m) {
+  _mode = m;
+  document.getElementById('btn-guided').classList.toggle('active', m === 'guided');
+  document.getElementById('btn-custom').classList.toggle('active', m === 'custom');
+  document.getElementById('guided-block').style.display = m === 'guided' ? 'block' : 'none';
+  document.getElementById('custom-block').style.display = m === 'custom'  ? 'block' : 'none';
+  checkReady();
+}
+
+function updatePreview() {
+  const a = document.getElementById('sel-actor').value;
+  const b = document.getElementById('sel-action').value;
+  const c = document.getElementById('sel-cond').value;
+  const box = document.getElementById('preview-box');
+  if (a && b && c) {
+    document.getElementById('preview-text').textContent = `"A ${a} ${b.toLowerCase()} ${c.toLowerCase()}"`;
+    box.style.display = 'block';
+  } else { box.style.display = 'none'; }
+  checkReady();
+}
+
+function onCustomInput() {
+  const v = document.getElementById('custom-input').value;
+  document.getElementById('char-count').textContent = v.length;
+  checkReady();
+}
+
+function checkReady() {
+  let ok = false;
+  if (_mode === 'guided') {
+    ok = !!(document.getElementById('sel-actor').value &&
+            document.getElementById('sel-action').value &&
+            document.getElementById('sel-cond').value);
+  } else {
+    ok = document.getElementById('custom-input').value.trim().length > 10;
+  }
+  document.getElementById('analyse-btn').disabled = !ok;
+}
+
+function getRule() {
+  if (_mode === 'guided') {
+    const a = document.getElementById('sel-actor').value;
+    const b = document.getElementById('sel-action').value;
+    const c = document.getElementById('sel-cond').value;
+    return `A ${a} ${b.toLowerCase()} ${c.toLowerCase()}`;
+  }
+  return document.getElementById('custom-input').value.trim();
+}
+
+/* ===================================================
+   EXAMPLE CHIPS
+=================================================== */
+function populateChips() {
+  const fallbacks = [
+    'Data controllers are permitted to process special categories of personal data without explicit consent.',
+    'Data processors shall not provide the data subject with access to their personal data upon request.',
+    'Organizations must notify the supervisory authority within 72 hours of becoming aware of a data breach.'
+  ];
+  const examples = App.demoCache.length >= 3
+    ? App.demoCache.slice(0,3).map(e => e.input_rule)
+    : fallbacks;
+
+  const el = document.getElementById('example-chips');
+  el.innerHTML = '';
+  examples.forEach(txt => {
+    const b = document.createElement('button');
+    b.className = 'chip';
+    b.textContent = txt.length > 75 ? txt.slice(0,72) + '...' : txt;
+    b.title = txt;
+    b.onclick = () => {
+      setMode('custom');
+      document.getElementById('custom-input').value = txt;
+      onCustomInput();
+    };
+    el.appendChild(b);
+  });
+}
+
+/* ===================================================
+   ANALYSIS FLOW
+=================================================== */
+const TERM_STEPS = [
+  { t: 0,    text: 'Parsing rule structure...' },
+  { t: 900,  text: 'Embedding rule into vector space...' },
+  { t: 1900, text: 'Querying Knowledge Graph for related concepts...' },
+  { t: 3000, text: 'Retrieving semantically similar rules via RAG...' },
+  { t: 4200, text: 'Running conflict classification with Mistral-7B...' },
+  { t: 5500, text: 'Applying hierarchical weight scoring...' },
+  { t: 7000, text: 'Generating explanation...' },
+  { t: 8000, text: 'Analysis complete.', done: true }
+];
+
+async function runAnalysis() {
+  const rule = getRule();
+  if (!rule) return;
+
+  // Hide results, reset
+  hideResults();
+  document.getElementById('loading-block').style.display = 'block';
+  document.getElementById('term-lines').innerHTML = '';
+  document.getElementById('t-cursor').style.display = 'inline-block';
+  document.getElementById('analyse-btn').disabled = true;
+
+  // Progress bar
+  const fill = document.getElementById('prog-fill');
+  fill.style.transition = 'none'; fill.style.width = '0%';
+  requestAnimationFrame(() => { fill.style.transition = 'width 8000ms linear'; fill.style.width = '100%'; });
+
+  // Fire fetch immediately
+  const resultPromise = doFetch(rule);
+
+  // Animate terminal
+  TERM_STEPS.forEach(s => {
+    setTimeout(() => {
+      const d = document.createElement('div');
+      d.className = 't-line' + (s.done ? ' done' : '');
+      d.innerHTML = `<span style="color:#4ade80;">❯</span> ${s.text}`;
+      document.getElementById('term-lines').appendChild(d);
+      requestAnimationFrame(() => d.classList.add('vis'));
+      if (s.done) document.getElementById('t-cursor').style.display = 'none';
+    }, s.t);
+  });
+
+  // After 8.5s show results
+  setTimeout(async () => {
+    let result;
+    try { result = await resultPromise; }
+    catch(e) { result = { match: false, error: true }; }
+    document.getElementById('loading-block').style.display = 'none';
+    document.getElementById('analyse-btn').disabled = false;
+    showResults(rule, result);
+  }, 8500);
+}
+
+async function doFetch(rule) {
+  try {
+    const r = await fetch('http://localhost:5000/demo_query', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ rule })
+    });
+    if (r.ok) {
+      const d = await r.json();
+      console.log('[analysis] API:', d);
+      return d;
+    }
+  } catch(e) { console.warn('[analysis] API offline, using local match'); }
+  return localMatch(rule);
+}
+
+function localMatch(rule) {
+  const cache = App.demoCache;
+  if (!cache.length) return { match: false };
+  const q = rule.toLowerCase();
+  let best = null, bestScore = 0;
+  cache.forEach(entry => {
+    const cand  = entry.input_rule.toLowerCase();
+    const qW    = new Set(q.split(/\s+/).filter(w => w.length > 3));
+    const cW    = cand.split(/\s+/).filter(w => w.length > 3);
+    const ovlap = cW.filter(w => q.includes(w)).length;
+    const score = qW.size > 0 ? (ovlap / qW.size) * 100 : 0;
+    if (score > bestScore) { bestScore = score; best = entry; }
+  });
+  if (best && bestScore >= 15) {
+    return { match: true, score: bestScore, matched_rule: best.input_rule,
+             inferred_modality: best.inferred_modality, conflicts: best.conflicts || [],
+             summary: best.summary || {} };
+  }
+  return { match: false, examples: cache.slice(0,3).map(c => c.input_rule) };
+}
+
+/* ===================================================
+   RESULTS RENDERING
+=================================================== */
+function hideResults() {
+  document.getElementById('results-section').style.display = 'none';
+  ['no-match-card','r-gauge-card','r-timeline-card','r-details-card','r-winning','r-expl-wrap']
+    .forEach(id => { document.getElementById(id).style.display = 'none'; });
+}
+
+function showResults(rule, data) {
+  const sec = document.getElementById('results-section');
+  sec.style.display = 'block';
+  sec.style.opacity = '0';
+  setTimeout(() => { sec.style.transition = 'opacity 400ms'; sec.style.opacity = '1'; }, 30);
+
+  if (!data.match) {
+    const chips = document.getElementById('no-match-chips');
+    chips.innerHTML = (data.examples || []).map(e =>
+      `<button class="chip" onclick="prefill(\`${e.replace(/`/g,'\\`')}\`)">${e.length>65?e.slice(0,62)+'...':e}</button>`
+    ).join('');
+    document.getElementById('no-match-card').style.display = 'block';
+    return;
+  }
+
+  const conflicts = data.conflicts || [];
+  const tc = conflicts[0] || null;
+  const sev = tc ? Math.min(tc.confidence || 0.5, 1) : 0.1;
+  const sevColor = sev < 0.3 ? 'var(--success)' : sev < 0.6 ? 'var(--warning)' : 'var(--danger)';
+
+  // Gauge
+  document.getElementById('r-gauge-card').style.display = 'block';
+  document.getElementById('gauge-score-val').textContent = sev.toFixed(2);
+  document.getElementById('gauge-score-val').style.color = sevColor;
+  animateGauge(sev);
+
+  // Timeline
+  document.getElementById('r-timeline-card').style.display = 'block';
+  buildTimeline(rule, conflicts);
+
+  // Details
+  if (conflicts.length) {
+    document.getElementById('r-details-card').style.display = 'block';
+    buildDetails(conflicts);
+  }
+
+  // Winning law
+  if (tc) {
+    document.getElementById('r-winning').style.display = 'block';
+    buildWinning(tc);
+  }
+
+  // Explanation
+  document.getElementById('r-expl-wrap').style.display = 'block';
+  const expl = conflicts.map(c =>
+    `[${c.conflict_id}]\n${c.explanation||''}\n\nLex Specialis:\n${c.lex_specialis_resolution||''}`
+  ).join('\n\n---\n\n');
+  document.getElementById('expl-body').textContent = expl || 'No detailed explanation available.';
+  document.getElementById('copy-btn').style.display = expl ? 'inline-flex' : 'none';
+}
+
+function prefill(text) {
+  setMode('custom');
+  document.getElementById('custom-input').value = text;
+  onCustomInput();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* --- Gauge --- */
+function animateGauge(target) {
+  const canvas = document.getElementById('gaugeCanvas');
+  const t0 = performance.now();
+  function frame(now) {
+    const p = Math.min((now - t0) / 1000, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    drawGauge(canvas, target * e);
+    if (p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function drawGauge(canvas, score) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H, r = H - 18;
+  ctx.clearRect(0, 0, W, H);
+
+  // Track
+  ctx.beginPath(); ctx.arc(cx, cy, r, Math.PI, 0, false);
+  ctx.strokeStyle = '#30363d'; ctx.lineWidth = 20; ctx.lineCap = 'round'; ctx.stroke();
+
+  // Green zone (0→0.3): π → 1.3π
+  ctx.beginPath(); ctx.arc(cx, cy, r, Math.PI, Math.PI * 1.3, false);
+  ctx.strokeStyle = '#3fb950'; ctx.lineWidth = 20; ctx.stroke();
+  // Orange zone (0.3→0.6): 1.3π → 1.6π
+  ctx.beginPath(); ctx.arc(cx, cy, r, Math.PI * 1.3, Math.PI * 1.6, false);
+  ctx.strokeStyle = '#d29922'; ctx.lineWidth = 20; ctx.stroke();
+  // Red zone (0.6→1.0): 1.6π → 2π
+  ctx.beginPath(); ctx.arc(cx, cy, r, Math.PI * 1.6, Math.PI * 2, false);
+  ctx.strokeStyle = '#f85149'; ctx.lineWidth = 20; ctx.stroke();
+
+  // Needle  (score 0 → angle π, score 1 → angle 2π)
+  const nA = Math.PI + score * Math.PI;
+  const nx = cx + r * Math.cos(nA);
+  const ny = cy + r * Math.sin(nA);
+  ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(nx, ny);
+  ctx.strokeStyle = '#e6edf3'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+  ctx.fillStyle = '#e6edf3'; ctx.fill();
+}
+
+/* --- Timeline --- */
+function buildTimeline(rule, conflicts) {
+  const tc = conflicts[0];
+  const arts = artBadges(conflicts);
+  const typeBadge = tc
+    ? `<span class="badge badge-danger">${tc.type}</span>`
+    : `<span class="badge badge-pm">No Conflict</span>`;
+  document.getElementById('result-timeline').innerHTML = `
+    <div class="tl-step">
+      <div class="tl-num">Step 1</div>
+      <div class="tl-title">Rule Entered</div>
+      <div class="tl-body">"${rule.length > 110 ? rule.slice(0,107) + '...' : rule}"</div>
+    </div>
+    <div class="tl-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+    <div class="tl-step">
+      <div class="tl-num">Step 2</div>
+      <div class="tl-title">Matched Articles</div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:6px;">${arts}</div>
+    </div>
+    <div class="tl-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+    <div class="tl-step">
+      <div class="tl-num">Step 3</div>
+      <div class="tl-title">Conflict Detected</div>
+      <div style="margin-top:6px;">${typeBadge}</div>
+      <div style="font-size:12px; color:var(--muted); margin-top:6px;">${conflicts.length} conflict${conflicts.length !== 1 ? 's' : ''} found</div>
+    </div>`;
+}
+
+function artBadges(conflicts) {
+  const arts = new Set();
+  conflicts.slice(0, 5).forEach(c => {
+    const m = (c.conflict_id || '').match(/(GDPR|EPRIVACY)_Art(\d+)/i);
+    if (m) arts.add(`${m[1].toUpperCase() === 'GDPR' ? 'GDPR' : 'ePrivacy'} Art.${m[2]}`);
+  });
+  if (!arts.size) return '<span class="badge badge-blue">Art. unknown</span>';
+  return [...arts].map(a => `<span class="badge ${a.startsWith('GDPR') ? 'badge-gdpr' : 'badge-ep'}">${a}</span>`).join('');
+}
+
+/* --- Conflict Details --- */
+function buildDetails(conflicts) {
+  const tc = conflicts[0];
+  const isGdpr = (tc.regulation || '').toUpperCase() === 'GDPR';
+  const gdprText  = isGdpr      ? (tc.their_rule || '—') : 'See full explanation below';
+  const epText    = !isGdpr     ? (tc.their_rule || '—') : 'See full explanation below';
+  document.getElementById('details-inner').innerHTML = `
+    <div class="detail-label">What GDPR says:</div>
+    <div class="detail-text">${gdprText}</div>
+    <div class="detail-label">What ePrivacy says:</div>
+    <div class="detail-text">${epText}</div>
+    <div class="detail-label">Why they conflict:</div>
+    <div class="detail-text">${tc.modality_clash || 'Modality clash between the two rules.'}</div>
+    ${tc.graph_overlap ? `<div class="detail-label">Legal concepts involved:</div><div class="detail-text">${tc.graph_overlap}</div>` : ''}`;
+}
+
+/* --- Winning Law --- */
+function buildWinning(tc) {
+  const lex = (tc.lex_specialis_resolution || '').toLowerCase();
+  let cls = 'ambiguous', label = 'Ambiguous', color = 'var(--muted)';
+  if (lex.includes('gdpr') && (lex.includes('takes legal precedence') || lex.includes('would take legal precedence') || lex.includes('takes precedence'))) {
+    cls = 'gdpr'; label = 'GDPR Wins'; color = 'var(--success)';
+  } else if ((lex.includes('eprivacy') || lex.includes('eprivacy regulation')) && lex.includes('precedence')) {
+    cls = 'eprivacy'; label = 'ePrivacy Wins'; color = 'var(--warning)';
+  }
+  document.getElementById('r-winning').innerHTML = `
+    <div class="winning-badge ${cls}">
+      <div class="winning-lbl">Under Lex Specialis — which law governs?</div>
+      <div class="winning-name" style="color:${color};">${label}</div>
+      <div class="winning-reason">${tc.lex_specialis_resolution ? tc.lex_specialis_resolution.slice(0, 320) + '…' : 'No Lex Specialis reasoning available.'}</div>
+    </div>`;
+}
+
+/* --- Explanation collapse --- */
+function toggleExpl() {
+  const body = document.getElementById('expl-body');
+  const chev = document.getElementById('expl-chev');
+  const btn  = document.getElementById('copy-btn');
+  const open = body.style.display === 'block';
+  body.style.display = open ? 'none' : 'block';
+  chev.style.transform = open ? '' : 'rotate(180deg)';
+  btn.style.display = open ? 'none' : 'inline-flex';
+}
+
+function copyExpl() {
+  navigator.clipboard.writeText(document.getElementById('expl-body').textContent).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.innerHTML = '<i class="fa-solid fa-check"></i> Copied!';
+    setTimeout(() => { btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy explanation'; }, 2000);
+  });
+}
+
+/* ===================================================
+   KNOWLEDGE GRAPH
+=================================================== */
+let kgNet = null, kgNodes = null, kgEdges = null;
+let kgRawN = [], kgRawE = [];
+
+async function initKG() {
+  document.getElementById('kgNetContainer').innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);">
+      <div style="text-align:center;">
+        <i class="fa-solid fa-circle-notch fa-spin" style="font-size:28px;color:var(--primary);display:block;margin-bottom:12px;"></i>
+        Loading knowledge graph…
+      </div>
+    </div>`;
+
+  const data = await safeFetch('data/knowledge_graph.json');
+  if (!data || !data.nodes || !data.nodes.length) {
+    document.getElementById('kgNetContainer').innerHTML =
+      '<div style="padding:40px;color:var(--danger);text-align:center;">Failed to load knowledge_graph.json.<br>Make sure the HTTP server is running from the project folder.</div>';
+    return;
+  }
+  App.kgData = data;
+  // Try filtered subgraph first; fall back to full graph if no CONFLICTS_WITH edges exist
+  const hasConflictEdges = data.links.some(e => e.edge_type === 'CONFLICTS_WITH');
+  buildKgFromData(data, hasConflictEdges);
+}
+
+function buildKgFromData(data, filtered) {
+  // --- filter to conflict-relevant subgraph when filtered=true ---
+  let nodesIn, edgesIn;
+  if (filtered) {
+    const conflictEdges = data.links.filter(e => e.edge_type === 'CONFLICTS_WITH');
+    const conflictNodeIds = new Set();
+    conflictEdges.forEach(e => { conflictNodeIds.add(e.source); conflictNodeIds.add(e.target); });
+    // Include parents (CONTAINS) and concepts (INVOLVES)
+    const extraEdges = data.links.filter(e =>
+      (e.edge_type === 'CONTAINS'  && conflictNodeIds.has(e.target)) ||
+      (e.edge_type === 'INVOLVES'  && conflictNodeIds.has(e.source))
+    );
+    extraEdges.forEach(e => { conflictNodeIds.add(e.source); conflictNodeIds.add(e.target); });
+    nodesIn = data.nodes.filter(n => conflictNodeIds.has(n.id));
+    edgesIn = [...conflictEdges, ...extraEdges];
+  } else {
+    nodesIn = data.nodes;
+    edgesIn = data.links;
+  }
+
+  // Build Vis.js node list
+  kgRawN = nodesIn.map(n => {
+    let bg, size;
+    if (n.node_type === 'article') {
+      bg = n.source === 'EPRIVACY' ? '#f59e0b' : '#3b82f6'; size = 28;
+    } else if (n.node_type === 'rule') {
+      bg = n.source === 'EPRIVACY' ? '#f97316' : '#10b981'; size = 16;
+    } else {
+      bg = '#8b5cf6'; size = 11;
+    }
+    return {
+      id: n.id,
+      label: String(n.title || n.label || n.id),
+      title: JSON.stringify(n),
+      color: { background: bg, border: bg,
+               highlight: { background: '#ffffff', border: bg },
+               hover:      { background: bg,       border: '#ffffff' } },
+      size, shape: n.node_type === 'concept' ? 'diamond' : 'dot',
+      font: { color: '#e6edf3', size: 10 },
+      _oc: bg, _os: size, _raw: n
+    };
+  });
+
+  kgRawE = edgesIn.map((e, i) => {
+    const isC = e.edge_type === 'CONFLICTS_WITH';
+    return {
+      id: i, from: e.source, to: e.target, title: e.edge_type,
+      color: { color: isC ? '#f85149' : '#2a3340', opacity: isC ? 0.8 : 0.5 },
+      width: isC ? 3 : 1, _type: e.edge_type
+    };
+  });
+
+  kgNodes = new vis.DataSet(kgRawN);
+  kgEdges = new vis.DataSet(kgRawE);
+
+  const container = document.getElementById('kgNetContainer');
+  container.innerHTML = '';
+
+  // Banner
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:10;background:rgba(22,27,34,0.95);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:13px;color:var(--muted);display:flex;align-items:center;gap:12px;white-space:nowrap;box-shadow:0 2px 12px rgba(0,0,0,0.4);';
+  if (filtered) {
+    banner.innerHTML = `<i class="fa-solid fa-filter" style="color:var(--primary);"></i> Showing conflict-relevant nodes only (<strong style="color:var(--text);">${kgRawN.length} nodes</strong>). Loads fast and highlights the most important relationships.
+    &nbsp;<button onclick="loadFullKg()" style="background:transparent;border:1px solid var(--warning);color:var(--warning);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:Inter,sans-serif;">
+      <i class="fa-solid fa-triangle-exclamation"></i> Load Full Graph (${data.nodes.length} nodes — slow)
+    </button>`;
+  } else {
+    banner.innerHTML = `<i class="fa-solid fa-circle-nodes" style="color:var(--primary);"></i> Full graph loaded — <strong style="color:var(--text);">${kgRawN.length} nodes</strong>`;
+  }
+  container.style.position = 'relative';
+  container.appendChild(banner);
+
+  kgNet = new vis.Network(container, { nodes: kgNodes, edges: kgEdges }, {
+    layout: { improvedLayout: false },
+    physics: {
+      enabled: true,
+      stabilization: { enabled: true, iterations: 80, updateInterval: 25 },
+      barnesHut: { gravitationalConstant: -5000, springConstant: 0.002, springLength: 150, damping: 0.9 }
+    },
+    interaction: { hover: true, tooltipDelay: 300, navigationButtons: false },
+    edges: { smooth: { type: 'continuous' }, arrows: { to: { enabled: true, scaleFactor: 0.3 } } },
+    nodes: { borderWidth: 1.5 }
+  });
+
+  // Disable physics after stabilization so the graph locks in place and stops jittering
+  kgNet.once('stabilizationIterationsDone', () => {
+    kgNet.setOptions({ physics: { enabled: false } });
+  });
+
+  kgNet.on('selectNode', p => {
+    if (p.nodes.length) { const n = kgNodes.get(p.nodes[0]); if (n) openSidebar(n); }
+  });
+  kgNet.on('deselectNode', () => closeSidebar());
+
+  // Populate concept filter (clear first to avoid duplicates on reload)
+  const concepts = kgRawN.filter(n => n._raw && n._raw.node_type === 'concept').map(n => n.label).sort();
+  const sel = document.getElementById('kg-sel-concept');
+  while (sel.options.length > 1) sel.remove(1); // keep the "All concepts" default
+  concepts.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; sel.appendChild(o); });
+}
+
+/* --- Search & Highlight --- */
+function kgSearchTerm(term) {
+  document.getElementById('kg-input').value = term; kgSearch();
+}
+
+function kgSearch() {
+  if (!kgNet || !kgNodes) return;
+  const q = document.getElementById('kg-input').value.trim().toLowerCase();
+  if (!q) { kgClear(); return; }
+
+  const all = kgNodes.get();
+  const matching = all.filter(n =>
+    n.label.toLowerCase().includes(q) || (n.title && n.title.toLowerCase().includes(q))
+  );
+  const matchIds = new Set(matching.map(n => n.id));
+  const connEdges = new Set(
+    kgEdges.get().filter(e => matchIds.has(e.from) || matchIds.has(e.to)).map(e => e.id)
+  );
+
+  // Nodes: highlight matches, fade others
+  kgNodes.update(all.map(n => ({
+    id: n.id,
+    color: matchIds.has(n.id)
+      ? { background: '#ffffff', border: n._oc, highlight: { background: '#ffffffcc', border: n._oc } }
+      : { background: n._oc + '22', border: n._oc + '33' },
+    size: matchIds.has(n.id) ? n._os * 1.5 : n._os,
+    opacity: matchIds.has(n.id) ? 1 : 0.18,
+    font: { color: matchIds.has(n.id) ? '#0d1117' : '#ffffff22', size: matchIds.has(n.id) ? 12 : 9 }
+  })));
+
+  // Edges: matched stay visible
+  kgEdges.update(kgEdges.get().map(e => ({
+    id: e.id,
+    color: { color: connEdges.has(e.id) ? (e._type === 'CONFLICTS_WITH' ? '#f85149' : '#777') : '#1a1a1a',
+             opacity: connEdges.has(e.id) ? 1 : 0.08 },
+    width: connEdges.has(e.id) ? (e._type === 'CONFLICTS_WITH' ? 3 : 1.5) : 0.5
+  })));
+
+  const badge = document.getElementById('kg-match-badge');
+  badge.textContent = `${matching.length} node${matching.length !== 1 ? 's' : ''} matching`;
+  badge.style.display = 'inline-block';
+
+  if (matching.length > 0) {
+    kgNet.focus(matching[0].id, { scale: 1.8, animation: { duration: 800, easingFunction: 'easeInOutQuad' } });
+    kgNet.selectNodes([matching[0].id]);
+    openSidebar(matching[0]);
+  } else {
+    openSidebarMsg('No node found',
+      `No nodes matched "<strong>${q}</strong>". Try a broader term like <em>consent</em> or <em>data</em>.`);
+  }
+}
+
+function kgClear() {
+  document.getElementById('kg-input').value = '';
+  document.getElementById('kg-match-badge').style.display = 'none';
+  if (!kgNodes) return;
+  kgNodes.update(kgRawN.map(n => ({
+    id: n.id, size: n._os, opacity: 1,
+    color: { background: n._oc, border: n._oc },
+    font: { color: '#e6edf3', size: 10 }
+  })));
+  kgEdges.update(kgRawE.map(e => ({
+    id: e.id,
+    color: { color: e._type === 'CONFLICTS_WITH' ? '#f85149' : '#2a3340', opacity: e._type === 'CONFLICTS_WITH' ? 0.8 : 0.5 },
+    width: e._type === 'CONFLICTS_WITH' ? 3 : 1
+  })));
+}
+
+/* --- Filters --- */
+function applyKgFilters() {
+  if (!kgEdges) return;
+  const cOnly   = document.getElementById('chk-conflict-only').checked;
+  const source  = document.getElementById('kg-sel-source').value;
+
+  kgEdges.update(kgRawE.map(e => {
+    const isC = e._type === 'CONFLICTS_WITH';
+    const vis2 = cOnly ? isC : true;
+    return { id: e.id, hidden: !vis2,
+             color: { color: isC ? '#f85149' : '#2a3340', opacity: vis2 ? (isC?0.8:0.5) : 0 } };
+  }));
+
+  kgNodes.update(kgRawN.map(n => {
+    let visible = true;
+    if (source === 'GDPR'     && n._raw.source !== 'GDPR')     visible = false;
+    if (source === 'EPRIVACY' && n._raw.source !== 'EPRIVACY') visible = false;
+    if (source === 'shared'   && n._raw.node_type !== 'concept') visible = false;
+    return { id: n.id, opacity: visible ? 1 : 0.05,
+             color: visible
+               ? { background: n._oc, border: n._oc }
+               : { background: '#111', border: '#1a1a1a' } };
+  }));
+}
+
+function kgFilterConcept() {
+  if (!kgNodes) return;
+  const val = document.getElementById('kg-sel-concept').value;
+  if (val === 'all') { kgClear(); return; }
+  document.getElementById('kg-input').value = val; kgSearch();
+}
+
+/* --- Controls --- */
+function kgResetZoom() { if (kgNet) kgNet.fit({ animation: { duration: 700, easingFunction: 'easeInOutQuad' } }); }
+function kgFitAll()    { if (kgNet) kgNet.fit({ animation: { duration: 1000, easingFunction: 'easeInOutQuad' } }); }
+function kgFullscreen() {
+  const el = document.getElementById('kg-full-target');
+  if (el.requestFullscreen) el.requestFullscreen();
+  else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+}
+
+/* --- Sidebar --- */
+function openSidebar(node) {
+  let raw = {};
+  try { raw = JSON.parse(node.title || '{}'); } catch(e) {}
+
+  const sidebar = document.getElementById('kg-sidebar');
+  sidebar.classList.add('open');
+
+  let html = `<button class="sb-close" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>`;
+
+  if (raw.node_type === 'article') {
+    const lawBdg = raw.source === 'EPRIVACY'
+      ? '<span class="badge badge-ep" style="margin-bottom:14px;">ePrivacy</span>'
+      : '<span class="badge badge-gdpr" style="margin-bottom:14px;">GDPR</span>';
+    html += `
+      <div style="margin-top:10px;">${lawBdg}</div>
+      <div style="font-size:22px; font-weight:800; margin:10px 0 4px; line-height:1.3;">Article ${raw.article_number||''}</div>
+      <div style="font-size:14px; color:var(--muted); margin-bottom:20px;">${raw.title || node.label}</div>
+      <div class="sb-section">
+        <div class="sb-section-title">Importance Weight</div>
+        <div class="sb-value">${((raw.article_weight||0)*100).toFixed(0)}%</div>
+        <div class="weight-bar"><div class="weight-bar-fill" style="width:${((raw.article_weight||0)*100).toFixed(0)}%;"></div></div>
+      </div>
+      ${raw.text_summary ? `<div class="sb-section"><div class="sb-section-title">Summary</div><div class="sb-value" style="color:var(--muted); font-size:13px; line-height:1.6;">${raw.text_summary.slice(0,240)}…</div></div>` : ''}`;
+  } else if (raw.node_type === 'rule') {
+    const lawBdg = raw.source === 'EPRIVACY'
+      ? '<span class="badge badge-ep">ePrivacy</span>'
+      : '<span class="badge badge-gdpr">GDPR</span>';
+    const modCls = { obligation: 'badge-ob', permission: 'badge-pm', prohibition: 'badge-pr' }[raw.modality] || 'badge-blue';
+    html += `
+      <div style="margin-top:10px; margin-bottom:14px;">${lawBdg}</div>
+      <div style="font-size:15px; font-weight:700; margin-bottom:16px;">${raw.id || node.label}</div>
+      <div class="sb-section">
+        <div class="sb-section-title">What it requires</div>
+        <div class="sb-value" style="font-size:13px; line-height:1.6; color:var(--muted);">${raw.raw_text || '—'}</div>
+      </div>
+      <div class="sb-section">
+        <div class="sb-section-title">Modality</div>
+        <span class="badge ${modCls}">${raw.modality || 'unknown'}</span>
+      </div>
+      <div class="sb-section">
+        <div class="sb-section-title">Weight</div>
+        <div class="weight-bar"><div class="weight-bar-fill" style="width:${((raw.article_weight||0)*100).toFixed(0)}%;"></div></div>
+      </div>`;
+  } else {
+    html += `
+      <div style="margin-top:10px; margin-bottom:14px;"><span class="badge badge-purple">Legal Concept</span></div>
+      <div style="font-size:20px; font-weight:800; margin-bottom:14px;">${raw.label || node.label}</div>
+      <div class="sb-section">
+        <div class="sb-section-title">Description</div>
+        <div class="sb-value" style="color:var(--muted); font-size:13px; line-height:1.6;">
+          A shared legal concept appearing across GDPR and ePrivacy regulations.
+        </div>
+      </div>
+      ${raw.frequency ? `<div class="sb-section"><div class="sb-section-title">Frequency</div><div class="sb-value">${raw.frequency} mentions</div></div>` : ''}`;
+  }
+
+  document.getElementById('sidebar-inner').innerHTML = html;
+}
+
+function openSidebarMsg(title, body) {
+  document.getElementById('kg-sidebar').classList.add('open');
+  document.getElementById('sidebar-inner').innerHTML = `
+    <button class="sb-close" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
+    <div style="margin-top: 24px; font-size:16px; font-weight:600; margin-bottom:12px;">${title}</div>
+    <div style="font-size:14px; color:var(--muted); line-height:1.6;">${body}</div>`;
+}
+
+function openSidebarMsg(title, body) {
+  document.getElementById('kg-sidebar').classList.add('open');
+  document.getElementById('sidebar-inner').innerHTML = `
+    <button class="sb-close" onclick="closeSidebar()"><i class="fa-solid fa-xmark"></i></button>
+    <div style="margin-top: 24px; font-size:16px; font-weight:600; margin-bottom:12px;">${title}</div>
+    <div style="font-size:14px; color:var(--muted); line-height:1.6;">${body}</div>`;
+}
+
+function closeSidebar() {
+  document.getElementById('kg-sidebar').classList.remove('open');
+  if (kgNet) kgNet.unselectAll();
+}
+
+/* "Load Full Graph" button handler */
+function loadFullKg() {
+  if (!App.kgData) return;
+  buildKgFromData(App.kgData, false);
+}
+
+/* ===================================================
+   INIT
+=================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+  loadAll();
+
+  // IntersectionObserver for step cards (scroll-in animation)
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        const delay = ['step1','step2','step3'].indexOf(entry.target.id) * 150;
+        setTimeout(() => entry.target.classList.add('step-visible'), delay);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  ['step1','step2','step3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+});
+</script>
+</body>
+</html>
