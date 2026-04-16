@@ -795,6 +795,126 @@
       animation: shimmer 1.4s infinite;
       border-radius: 6px;
     }
+
+    /* ===================================================
+       PIPELINE HEALTH PANEL
+    =================================================== */
+    .ph-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 28px 24px;
+      margin-bottom: 36px;
+    }
+    .ph-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .ph-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ph-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .ph-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .ph-badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .ph-badge {
+      flex: 1;
+      min-width: 140px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      transition: border-color 200ms ease;
+    }
+    .ph-badge.ph-pass { border-top: 3px solid var(--success); }
+    .ph-badge.ph-fail { border-top: 3px solid var(--danger); }
+    .ph-badge-icon {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+    .ph-badge-icon.pass { color: var(--success); }
+    .ph-badge-icon.fail { color: var(--danger); }
+    .ph-badge-name {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .ph-badge-issues {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .ph-badge-issues li {
+      font-size: 11px;
+      color: var(--danger);
+      line-height: 1.5;
+      padding: 2px 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .ph-badge-issues li[data-warn] {
+      color: var(--warning);
+    }
+    .ph-unavailable {
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+      padding: 8px 0;
+    }
+    .ph-run-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 200ms ease;
+      flex-shrink: 0;
+    }
+    .ph-run-btn:hover:not(:disabled) { color: var(--text); border-color: var(--muted); }
+    .ph-run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    @keyframes phSpin { to { transform: rotate(360deg); } }
+    .ph-spin { display: inline-block; animation: phSpin 0.7s linear infinite; }
+
+    /* ===================================================
+       CONFLICTS WARNING BANNER
+    =================================================== */
+    .conflict-warn-banner {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: rgba(210,153,34,0.10);
+      border: 1px solid rgba(210,153,34,0.35);
+      border-radius: 8px;
+      padding: 12px 18px;
+      margin-bottom: 22px;
+      font-size: 13px;
+      color: #e3b341;
+      line-height: 1.5;
+    }
+    .conflict-warn-banner.visible { display: flex; }
+    .conflict-warn-banner i { font-size: 15px; flex-shrink: 0; }
   </style>
 </head>
 <body>
@@ -856,6 +976,28 @@
         <div class="stat-icon"><i class="fa-solid fa-book-open"></i></div>
         <div class="stat-value" id="sv-arts">0</div>
         <div class="stat-label">Legal articles processed</div>
+      </div>
+    </div>
+
+    <!-- Pipeline Health -->
+    <div class="ph-wrap anim-in" id="ph-wrap">
+      <div class="ph-header">
+        <div>
+          <div class="ph-title-row">
+            <i class="fa-solid fa-shield-halved" style="color:var(--primary);"></i>
+            <div class="ph-title">Pipeline Health</div>
+          </div>
+          <div class="ph-subtitle">Live validation status across all pipeline stages</div>
+        </div>
+        <button class="ph-run-btn" id="ph-run-btn" onclick="runValidation()">
+          <i class="fa-solid fa-rotate-right"></i> Run Validation
+        </button>
+      </div>
+      <div id="ph-body">
+        <div class="ph-unavailable" id="ph-unavailable" style="display:none;">
+          Conflict metrics unavailable — run <code style="font-size:12px; color:var(--primary);">query_web.py</code> to enable this panel
+        </div>
+        <div class="ph-badges" id="ph-badges"></div>
       </div>
     </div>
 
@@ -923,6 +1065,12 @@
 <div class="page" id="page-check">
   <div class="page-inner">
     <div class="checker-wrap">
+
+      <div class="conflict-warn-banner" id="conflict-warn-banner">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>⚠ Validation issues detected in conflict data — some results may be incomplete or missing.</span>
+      </div>
+
       <div style="text-align:center; margin-bottom:8px;">
         <h1 class="section-h">Analyse a Rule for Conflicts</h1>
         <p class="section-sub" style="margin-bottom:28px;">Describe a GDPR or ePrivacy rule in plain English. We check it against our full regulatory database.</p>
@@ -1180,6 +1328,140 @@ const App = {
   kgData: null
 };
 
+window.validationState = null;
+
+/* ===================================================
+   PIPELINE HEALTH VALIDATION
+=================================================== */
+async function runValidation() {
+  const btn  = document.getElementById('ph-run-btn');
+  const body = document.getElementById('ph-badges');
+  const na   = document.getElementById('ph-unavailable');
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="ph-spin"><i class="fa-solid fa-rotate-right"></i></span> Checking…';
+  body.innerHTML = '<div class="ph-unavailable" style="display:block;">Loading conflict metrics...</div>';
+  na.style.display = 'none';
+
+  try {
+    const controller = new AbortController();
+    const tid = setTimeout(() => controller.abort(), 12000);
+    const resp = await fetch('http://localhost:5000/validate', { signal: controller.signal });
+    clearTimeout(tid);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    window.validationState = data;
+    renderValidationPanel(data);
+    updateConflictBanner(data);
+  } catch(_) {
+    window.validationState = null;
+    na.style.display = 'block';
+    body.innerHTML = '';
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> Run Validation';
+}
+
+function renderValidationPanel(data) {
+  const container = document.getElementById('ph-badges');
+  container.innerHTML = '';
+  const total = Number(data.total_conflicts || 0);
+  const avgComposite = Number(data.avg_composite_score || 0);
+  const avgConfidence = Number(data.avg_confidence || 0);
+  const distribution = data.score_distribution || { high: 0, medium: 0, low: 0 };
+  const consistency = data.severity_consistency || { consistent: 0, inconsistent: 0 };
+  const byType = data.by_type || {};
+
+  const compositeColor = avgComposite >= 0.6 ? 'var(--success)' : (avgComposite >= 0.4 ? 'var(--warning)' : 'var(--danger)');
+  const confidenceColor = avgConfidence >= 0.8 ? 'var(--success)' : (avgConfidence >= 0.6 ? 'var(--warning)' : 'var(--danger)');
+
+  const row1 = document.createElement('div');
+  row1.style.display = 'grid';
+  row1.style.gridTemplateColumns = 'repeat(3, minmax(0, 1fr))';
+  row1.style.gap = '12px';
+  row1.style.marginBottom = '12px';
+  row1.innerHTML = `
+    <div class="ph-badge">
+      <div class="ph-badge-name">Total Conflicts</div>
+      <div style="font-size:26px; font-weight:700; color:var(--text);">${total}</div>
+    </div>
+    <div class="ph-badge">
+      <div class="ph-badge-name">Avg Composite Score</div>
+      <div style="font-size:26px; font-weight:700; color:${compositeColor};">${avgComposite.toFixed(2)}</div>
+    </div>
+    <div class="ph-badge">
+      <div class="ph-badge-name">Avg Confidence</div>
+      <div style="font-size:26px; font-weight:700; color:${confidenceColor};">${avgConfidence.toFixed(2)}</div>
+    </div>
+  `;
+
+  const row2 = document.createElement('div');
+  row2.style.display = 'grid';
+  row2.style.gridTemplateColumns = 'repeat(2, minmax(0, 1fr))';
+  row2.style.gap = '12px';
+  row2.style.marginBottom = '12px';
+  row2.innerHTML = `
+    <div class="ph-badge">
+      <div class="ph-badge-name">Score Distribution</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;">
+        <span class="badge badge-gdpr">High: ${distribution.high || 0}</span>
+        <span class="badge badge-warning">Medium: ${distribution.medium || 0}</span>
+        <span class="badge badge-danger">Low: ${distribution.low || 0}</span>
+      </div>
+    </div>
+    <div class="ph-badge">
+      <div class="ph-badge-name">Severity Consistency</div>
+      <div style="margin-top:6px; font-size:14px;">
+        <span style="color:var(--success); font-weight:600;">${consistency.consistent || 0} consistent</span>
+        <span style="color:var(--muted);"> / </span>
+        <span style="color:var(--danger); font-weight:600;">${consistency.inconsistent || 0} inconsistent</span>
+      </div>
+    </div>
+  `;
+
+  const row3 = document.createElement('div');
+  row3.className = 'ph-badge';
+  const items = Object.entries(byType).sort((a, b) => b[1] - a[1]);
+  const barsHtml = items.map(([name, count]) => {
+    const width = total > 0 ? Math.max((count / total) * 100, 2) : 0;
+    return `
+      <div style="margin-bottom:8px;">
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-bottom:4px;">
+          <span>${name}</span>
+          <span style="color:var(--text);">${count}</span>
+        </div>
+        <div style="height:8px; background:var(--surface); border:1px solid var(--border); border-radius:8px; overflow:hidden;">
+          <div style="height:100%; width:${width}%; background:linear-gradient(90deg, var(--primary), #8b5cf6);"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+  row3.innerHTML = `
+    <div class="ph-badge-name">Conflict Type Breakdown</div>
+    <div style="margin-top:8px;">
+      ${barsHtml || '<div style="font-size:13px; color:var(--muted);">No conflict types available</div>'}
+    </div>
+  `;
+
+  container.appendChild(row1);
+  container.appendChild(row2);
+  container.appendChild(row3);
+}
+
+function updateConflictBanner(data) {
+  const banner = document.getElementById('conflict-warn-banner');
+  if (!banner) return;
+  const inconsistent = data && data.severity_consistency
+    ? Number(data.severity_consistency.inconsistent || 0)
+    : 0;
+  if (inconsistent > 0) {
+    banner.classList.add('visible');
+  } else {
+    banner.classList.remove('visible');
+  }
+}
+
 /* ===================================================
    NAVIGATION
 =================================================== */
@@ -1212,7 +1494,7 @@ async function loadAll() {
   const [rules, corpus, conflicts, cache] = await Promise.all([
     safeFetch('data/rules.json'),
     safeFetch('data/corpus.json'),
-    safeFetch('data/conflicts_final.json'),
+    safeFetch('data/conflicts_with_explanations.json'),
     safeFetch('data/demo_cache.json')
   ]);
   App.rules     = (typeof rules === 'object' && !Array.isArray(rules)) ? rules : (Array.isArray(rules) ? rules : {});
@@ -1239,21 +1521,13 @@ function renderStats() {
     if (rCount === 0) rCount = 508; // safety fallback
   }
 
-  // Conflicts: read from actual data, show 0 if pipeline hasn't run yet
-  const cCount = App.conflicts.length;
-  let avgSev = 0;
-  if (App.conflicts.length > 0) {
-    avgSev = App.conflicts.reduce((s, c) => s + (c.composite_score || 0), 0) / App.conflicts.length;
-  }
-
   countUp('sv-rules', rCount, 1500, false);
   countUp('sv-arts',  aCount, 1500, false);
-  countUp('sv-conf',  cCount, 1500, false);
-  countUp('sv-sev',   avgSev, 1500, true);
 }
 
 function countUp(id, target, dur, isFloat) {
   const el = document.getElementById(id);
+  if (!el) return;
   const t0 = performance.now();
   function frame(now) {
     const p = Math.min((now - t0) / dur, 1);
@@ -1774,7 +2048,7 @@ async function initKG() {
   }
   App.kgData = data;
   // Try filtered subgraph first; fall back to full graph if no CONFLICTS_WITH edges exist
-  const hasConflictEdges = data.links.some(e => e.edge_type === 'CONFLICTS_WITH');
+  const hasConflictEdges = data.edges.some(e => e.edge_type === 'CONFLICTS_WITH');
   buildKgFromData(data, hasConflictEdges);
 }
 
@@ -1782,11 +2056,11 @@ function buildKgFromData(data, filtered) {
   // --- filter to conflict-relevant subgraph when filtered=true ---
   let nodesIn, edgesIn;
   if (filtered) {
-    const conflictEdges = data.links.filter(e => e.edge_type === 'CONFLICTS_WITH');
+    const conflictEdges = data.edges.filter(e => e.edge_type === 'CONFLICTS_WITH');
     const conflictNodeIds = new Set();
     conflictEdges.forEach(e => { conflictNodeIds.add(e.source); conflictNodeIds.add(e.target); });
     // Include parents (CONTAINS) and concepts (INVOLVES)
-    const extraEdges = data.links.filter(e =>
+    const extraEdges = data.edges.filter(e =>
       (e.edge_type === 'CONTAINS'  && conflictNodeIds.has(e.target)) ||
       (e.edge_type === 'INVOLVES'  && conflictNodeIds.has(e.source))
     );
@@ -1795,7 +2069,7 @@ function buildKgFromData(data, filtered) {
     edgesIn = [...conflictEdges, ...extraEdges];
   } else {
     nodesIn = data.nodes;
-    edgesIn = data.links;
+    edgesIn = data.edges;
   }
 
   // Build Vis.js node list
@@ -2080,8 +2354,8 @@ function loadFullKg() {
 =================================================== */
 document.addEventListener('DOMContentLoaded', () => {
   loadAll();
+  runValidation();
 
-  // IntersectionObserver for step cards (scroll-in animation)
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {

@@ -8,19 +8,34 @@ import json
 import os
 import sys
 
+from validator import PipelineValidator
+
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+
+
+def _print_validation_result(result):
+    if result["passed"]:
+        print("[VALIDATOR] ✓ Validation passed.")
+    else:
+        for issue in result["issues"]:
+            print(f"[VALIDATOR]   {'WARN:' if issue.startswith('WARN:') else '✗'} {issue}")
+        print("[VALIDATOR] ⚠ Validation failed for this step. Review issues before proceeding.")
 
 
 def cmd_scrape(_args):
     """Scrape GDPR and ePrivacy articles."""
     from scraper import PolicyScraper
     PolicyScraper().run()
+    result = PipelineValidator.validate_corpus()
+    _print_validation_result(result)
 
 
 def cmd_extract(args):
     """Extract rules via LLM."""
     from rule_extractor import RuleExtractor
     RuleExtractor(backend=args.backend).run()
+    result = PipelineValidator.validate_rules()
+    _print_validation_result(result)
 
 
 def cmd_score(_args):
@@ -34,6 +49,8 @@ def cmd_build_kg(_args):
     from knowledge_graph import PolicyKnowledgeGraph
     kg = PolicyKnowledgeGraph()
     kg.run()
+    result = PipelineValidator.validate_knowledge_graph()
+    _print_validation_result(result)
 
 
 def cmd_embed(_args):
@@ -59,15 +76,16 @@ def cmd_detect(args):
     detector = ConflictDetector(kg, retriever, backend=args.backend)
     detector.detect_all()
 
-    # Re-export KG with conflict edges
     kg.save_all()
 
-    # Print summary
     summary = detector.get_conflict_summary()
     print("\n=== Conflict Detection Summary ===")
     print(f"Total conflicts: {summary['total']}")
     print(f"By type: {json.dumps(summary['by_type'], indent=2)}")
     print(f"Average composite score: {summary['avg_score']}")
+
+    result = PipelineValidator.validate_conflicts()
+    _print_validation_result(result)
 
 
 def cmd_explain(args):
@@ -80,6 +98,9 @@ def cmd_explain(args):
 
     explainer = ConflictExplainer(kg, backend=args.backend)
     explainer.run()
+
+    result = PipelineValidator.validate_explanations()
+    _print_validation_result(result)
 
 
 def cmd_query(args):
@@ -134,6 +155,11 @@ def cmd_query(args):
         if c.get("explanation"):
             print(f"  Explanation: {c['explanation'][:200]}…")
         print()
+
+
+def cmd_validate_all(_args):
+    """Run all pipeline validators in sequence and print a summary table."""
+    PipelineValidator.run_all()
 
 
 def cmd_run_all(args):
@@ -221,7 +247,8 @@ def build_parser() -> argparse.ArgumentParser:
     q.add_argument("--concept", type=str, default=None,
                    help="Filter by shared concept (e.g. 'consent')")
 
-    # run-all
+    subparsers.add_parser("validate-all", help="Run all pipeline validators")
+
     subparsers.add_parser("run-all", help="Run all steps sequentially")
 
     return parser
@@ -244,6 +271,7 @@ def main():
         "detect": cmd_detect,
         "explain": cmd_explain,
         "query": cmd_query,
+        "validate-all": cmd_validate_all,
         "run-all": cmd_run_all,
     }
 

@@ -16,7 +16,11 @@ import json
 import re
 import networkx as nx
 
-# Existing project imports
+try:
+    from validator import PipelineValidator
+except ImportError:
+    PipelineValidator = None
+
 try:
     from rule_extractor import llm_call
 except ImportError:
@@ -167,6 +171,19 @@ class QueryInterface:
             return f"(LLM Generation Failed: {e})", ""
 
     def analyze(self, rule_statement: str):
+        if PipelineValidator is not None:
+            validation = PipelineValidator.validate_query_input(rule_statement)
+            if not validation["passed"]:
+                return {
+                    "input_rule": rule_statement,
+                    "inferred_modality": "Unknown",
+                    "conflicts": [],
+                    "summary": {},
+                }
+            for issue in validation["issues"]:
+                if issue.startswith("WARN:"):
+                    print(f"[VALIDATOR] {issue}")
+
         inferred_modality = self.infer_modality(rule_statement)
         
         # 1. Embed and retrieve top 10 rules

@@ -24,6 +24,21 @@ class PolicyEmbedder:
             model_name="all-MiniLM-L6-v2"
         )
 
+    def _sanitize_metadata(self, metadata: dict) -> dict:
+        sanitized = {}
+        for key, value in metadata.items():
+            if isinstance(value, list):
+                sanitized[key] = json.dumps(value)
+            elif isinstance(value, dict):
+                sanitized[key] = json.dumps(value)
+            elif value is None:
+                sanitized[key] = ""
+            elif not isinstance(value, (str, int, float, bool)):
+                sanitized[key] = str(value)
+            else:
+                sanitized[key] = value
+        return sanitized
+
     # ------------------------------------------------------------------
     # 5A  Embed rules
     # ------------------------------------------------------------------
@@ -59,7 +74,7 @@ class PolicyEmbedder:
             weights = r.get("weights", {})
             ids.append(rid)
             documents.append(text)
-            metadatas.append({
+            metadata = {
                 "rule_id": rid,
                 "source": r.get("source", ""),
                 "article_number": r.get("article_number", 0),
@@ -67,7 +82,9 @@ class PolicyEmbedder:
                 "article_weight": weights.get("article", 0.5),
                 "source_weight": weights.get("source", 0.5),
                 "lex_specialis": str(weights.get("lex_specialis", False)),
-            })
+            }
+            metadata = self._sanitize_metadata(metadata)
+            metadatas.append(metadata)
 
         # Upsert in batches of 100
         batch_size = 100
@@ -104,12 +121,14 @@ class PolicyEmbedder:
                 doc_id = f"{article['id']}_chunk_{ci}"
                 ids.append(doc_id)
                 documents.append(chunk)
-                metadatas.append({
+                metadata = {
                     "article_id": article["id"],
                     "source": article["source"],
                     "article_number": article["article"],
                     "chunk_index": ci,
-                })
+                }
+                metadata = self._sanitize_metadata(metadata)
+                metadatas.append(metadata)
 
         # Upsert in batches
         batch_size = 100
