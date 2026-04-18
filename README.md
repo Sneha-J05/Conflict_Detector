@@ -136,4 +136,3 @@ python interface/demo_runner.py
 ## License
 This project is for academic and research purposes.
 
-This project is for academic and research purposes.
