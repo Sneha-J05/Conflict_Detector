@@ -71,30 +71,7 @@ The system follows a modular pipeline:
 
 **Achieved high accuracy with no false conflict classifications in evaluated samples.**
 
----
 
-## Project Structure
-project-root/
-│
-├── data/                 # Raw and processed documents
-├── pipeline/             # Core modules
-│   ├── scraper.py
-│   ├── rule_extractor.py
-│   ├── weight_scorer.py
-│   ├── graph_builder.py
-│   ├── embedder.py
-│   ├── conflict_detector.py
-│   └── explainer.py
-│
-├── interface/            # Query and UI layer
-│   ├── query_interface.py
-│   └── demo_runner.py
-│
-├── docs/
-│   └── ieee_draft.pdf
-│
-├── requirements.txt
-└── README.md
 ---
 
 ## Installation
