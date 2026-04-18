@@ -95,7 +95,6 @@ project-root/
 │
 ├── requirements.txt
 └── README.md
-
 ---
 
 ## Installation
